@@ -1,0 +1,88 @@
+# =============================================================================
+# home-soc-lab — .gitignore
+#
+# Committed FIRST, before any other file. Git history is permanent: adding a
+# pattern here after a file is already tracked does nothing, and deleting a
+# secret in a later commit leaves it readable in the earlier one.
+# =============================================================================
+
+# --- 1. Secrets and environment files ----------------------------------------
+# Real credentials live here and must never leave this machine. The lab's SIEM
+# passwords go in .env; by week 9 this same pattern holds AWS keys.
+.env
+.env.*
+*.env
+secrets/
+credentials
+credentials.*
+
+# ...but DO commit the placeholder template, so a stranger knows which
+# variables to set. The leading ! un-ignores a file matched above.
+!.env.example
+
+# --- 2. Keys and certificates ------------------------------------------------
+# A leaked private key is a permanent door into a system. Revocation is the
+# only fix, and it is never quick.
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+id_rsa
+id_ed25519
+
+# --- 3. Terraform (arrives week 12, but the habit starts now) ----------------
+# State files record your real infrastructure AND store secrets in plain
+# readable text. This is one of the most common serious leaks in public repos.
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+crash.log
+
+# --- 4. Container runtime data -----------------------------------------------
+# Wazuh's indexer writes gigabytes of database files here. Not secret, but
+# committing them makes the repo too big to clone — which breaks the entire
+# point of this project.
+data/
+volumes/
+wazuh-data/
+*-data/
+config/wazuh_indexer_ssl_certs/
+
+# --- 5. Downloaded attack datasets -------------------------------------------
+# Replayed Windows telemetry is FETCHED BY SCRIPT at a pinned version, never
+# committed. Large binaries in git history are permanent dead weight.
+datasets/raw/
+*.evtx
+*.pcap
+*.pcapng
+*.zip
+*.tar.gz
+
+# --- 6. Python (the week-2 CLI, and any helper scripts here) -----------------
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# --- 7. Editor and OS noise --------------------------------------------------
+# Harmless, but it makes a repo look careless. .DS_Store is macOS storing your
+# folder's icon positions — it has no business in a security lab.
+.DS_Store
+.AppleDouble
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# --- 8. Logs and scratch -----------------------------------------------------
+*.log
+tmp/
+scratch/

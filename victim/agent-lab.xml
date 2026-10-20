@@ -1,0 +1,18 @@
+
+<!-- Added by home-soc-lab. -->
+<ossec_config>
+  <!-- Ship SSH and other auth events to the manager. -->
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/var/log/auth.log</location>
+  </localfile>
+
+  <!-- Do not restart when the manager sends shared configuration. The agent
+       gets that configuration once, about 20 seconds after it first connects,
+       and the restart skips any log lines written while it runs. That made
+       `make test` fail when it ran straight after `make up`. The lab's shared
+       configuration is empty, so the restart gains nothing. -->
+  <client>
+    <auto_restart>no</auto_restart>
+  </client>
+</ossec_config>

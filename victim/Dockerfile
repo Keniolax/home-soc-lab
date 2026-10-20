@@ -35,8 +35,8 @@ RUN set -eu; \
 
 COPY rsyslog.conf /etc/rsyslog.conf
 COPY sshd-lab.conf /etc/ssh/sshd_config.d/10-lab.conf
-COPY agent-localfile.xml /tmp/agent-localfile.xml
-RUN cat /tmp/agent-localfile.xml >> /var/ossec/etc/ossec.conf && rm /tmp/agent-localfile.xml
+COPY agent-lab.xml /tmp/agent-lab.xml
+RUN cat /tmp/agent-lab.xml >> /var/ossec/etc/ossec.conf && rm /tmp/agent-lab.xml
 
 COPY entrypoint.sh /usr/local/bin/entrypoint
 COPY ssh-probe.sh /usr/local/bin/ssh-probe

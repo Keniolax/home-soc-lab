@@ -1,8 +1,0 @@
-
-<!-- Added by home-soc-lab: ship SSH and other auth events to the manager. -->
-<ossec_config>
-  <localfile>
-    <log_format>syslog</log_format>
-    <location>/var/log/auth.log</location>
-  </localfile>
-</ossec_config>

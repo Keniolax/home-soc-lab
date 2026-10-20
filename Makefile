@@ -1,0 +1,44 @@
+# home-soc-lab. Run `make` on its own to list the targets.
+
+SHELL := /bin/bash
+COMPOSE := docker compose
+# The first start pulls about 7.5 GB of images and builds the security index.
+WAIT_TIMEOUT := 900
+
+.DEFAULT_GOAL := help
+.PHONY: help up down test status logs clean
+
+help: ## List the targets
+	@awk -F ':.*## ' '/^[a-z-]+:.*## / { printf "  make %-8s %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+
+.env: .env.example
+	@scripts/init-env.sh
+
+up: .env ## Start the lab and wait until every service is healthy
+	@scripts/preflight.sh
+	$(COMPOSE) up -d --build --wait --wait-timeout $(WAIT_TIMEOUT)
+	@port=$$(grep -E '^DASHBOARD_PORT=' .env | cut -d= -f2); \
+	echo; \
+	echo "Lab is up."; \
+	echo "  Dashboard: https://localhost:$${port:-8443}"; \
+	echo "  User:      admin"; \
+	echo "  Password:  the INDEXER_ADMIN_PASSWORD line in .env"; \
+	echo "  Your browser will warn about the certificate: the lab signs its own."; \
+	echo "  Next:      make test"
+
+test: ## Make failed SSH logins on the victim and check that Wazuh alerts
+	@scripts/test-detection.sh
+
+status: ## Show each service and its health
+	$(COMPOSE) ps --all
+
+logs: ## Follow the logs of every service
+	$(COMPOSE) logs -f --tail=50
+
+down: ## Stop the lab and delete its containers, volumes and certificates
+	$(COMPOSE) --profile test down --volumes --remove-orphans
+
+clean: down ## Also delete .env (new passwords next time) and the victim image
+	rm -f .env
+	-docker image rm home-soc-lab/victim:local
+	rm -rf tmp/last-test

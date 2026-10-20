@@ -230,6 +230,9 @@ Wazuh decoder accepts.
 - **Passwords apply only to a fresh lab.** The indexer reads its user list once, when it first
   creates its security index. To change a password, run `make down`, edit `.env`, then
   `make up`.
+- **Shared agent settings need a restart.** The agent does not restart when the manager sends
+  it new shared configuration, because that restart made the test lose log lines. If you add
+  settings to the manager's `default` agent group, run `docker compose restart victim`.
 - **Tested on Apple Silicon only.** The images and the agent package exist for `amd64`, but I
   have not run the lab on an `amd64` machine.
 

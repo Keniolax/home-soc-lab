@@ -1,0 +1,40 @@
+# Wazuh indexer (OpenSearch) settings for a single-node lab.
+
+cluster.name: home-soc-lab
+node.name: wazuh.indexer
+network.host: 0.0.0.0
+discovery.type: single-node
+path.data: /var/lib/wazuh-indexer
+path.logs: /var/log/wazuh-indexer
+
+# Wazuh's tools expect an Elasticsearch-style version string.
+compatibility.override_main_response_version: true
+
+# A laptop disk is often more than 90% full. OpenSearch would then stop
+# writing alerts, and the lab would look broken for no visible reason.
+cluster.routing.allocation.disk.threshold_enabled: false
+
+# --- TLS ---------------------------------------------------------------------
+# Certificates come from scripts/init-certs.sh.
+plugins.security.ssl.http.enabled: true
+plugins.security.ssl.http.pemcert_filepath: certs/indexer.pem
+plugins.security.ssl.http.pemkey_filepath: certs/indexer-key.pem
+plugins.security.ssl.http.pemtrustedcas_filepath: certs/root-ca.pem
+plugins.security.ssl.http.enabled_protocols: ["TLSv1.2", "TLSv1.3"]
+
+plugins.security.ssl.transport.pemcert_filepath: certs/indexer.pem
+plugins.security.ssl.transport.pemkey_filepath: certs/indexer-key.pem
+plugins.security.ssl.transport.pemtrustedcas_filepath: certs/root-ca.pem
+plugins.security.ssl.transport.enforce_hostname_verification: false
+
+# --- Access control ----------------------------------------------------------
+# These subjects must match the ones in scripts/init-certs.sh.
+plugins.security.authcz.admin_dn:
+  - "CN=admin,OU=lab,O=home-soc-lab,C=US"
+plugins.security.nodes_dn:
+  - "CN=wazuh.indexer,OU=lab,O=home-soc-lab,C=US"
+
+# Create the security index from the mounted files on first start.
+plugins.security.allow_default_init_securityindex: true
+plugins.security.restapi.roles_enabled: ["all_access", "security_rest_api_access"]
+plugins.security.system_indices.enabled: true

@@ -1,0 +1,177 @@
+# home-soc-lab: a Wazuh SIEM and one monitored Ubuntu victim.
+#
+# Start it with `make up`, not with `docker compose up`. The Makefile creates
+# .env with random passwords first, and this file refuses to start without them.
+#
+# Every image is pinned by digest. The tag beside each digest is for people;
+# Docker uses only the digest.
+
+name: home-soc-lab
+
+x-images:
+  manager: &manager-image wazuh/wazuh-manager:4.14.7@sha256:e32fe983f83b9ee1f14d8e4f061848244a21c4f678d278d13f91ff6079961d6f
+  indexer: &indexer-image wazuh/wazuh-indexer:4.14.7@sha256:1b85f946cc7c6530ffc34b5a2f4471ef533a17e6262f97b75dc794c3f2b8c0a0
+  dashboard: &dashboard-image wazuh/wazuh-dashboard:4.14.7@sha256:860f45d7878fcf34e42616bbceb91e8aa726b6108d0c7469e554e47648d28d43
+
+services:
+  # --- One-shot setup -------------------------------------------------------
+  # Both jobs write into the lab-init volume and exit. They skip work that is
+  # already done, so a second `make up` keeps the same certificates.
+
+  init-certs:
+    image: *manager-image
+    user: root
+    entrypoint: ["/bin/bash", "/lab/init-certs.sh"]
+    volumes:
+      - ./scripts/init-certs.sh:/lab/init-certs.sh:ro
+      - lab-init:/out
+    network_mode: none
+    restart: "no"
+
+  init-users:
+    image: *indexer-image
+    user: root
+    entrypoint: ["/bin/bash", "/lab/init-users.sh"]
+    environment:
+      INDEXER_ADMIN_PASSWORD: ${INDEXER_ADMIN_PASSWORD:?run make up, which creates .env}
+      DASHBOARD_SERVER_PASSWORD: ${DASHBOARD_SERVER_PASSWORD:?run make up, which creates .env}
+    volumes:
+      - ./scripts/init-users.sh:/lab/init-users.sh:ro
+      - lab-init:/out
+    network_mode: none
+    restart: "no"
+
+  # --- SIEM -----------------------------------------------------------------
+
+  wazuh.indexer:
+    image: *indexer-image
+    hostname: wazuh.indexer
+    restart: unless-stopped
+    environment:
+      OPENSEARCH_JAVA_OPTS: -Xms${INDEXER_HEAP:-1g} -Xmx${INDEXER_HEAP:-1g}
+    ulimits:
+      nofile: { soft: 65536, hard: 65536 }
+    volumes:
+      - indexer-data:/var/lib/wazuh-indexer
+      - ./config/indexer/opensearch.yml:/usr/share/wazuh-indexer/config/opensearch.yml:ro
+      - type: volume
+        source: lab-init
+        target: /usr/share/wazuh-indexer/config/certs
+        read_only: true
+        volume: { subpath: indexer }
+      - type: volume
+        source: lab-init
+        target: /usr/share/wazuh-indexer/config/opensearch-security
+        read_only: true
+        volume: { subpath: security }
+    networks: [lab]
+    depends_on:
+      init-certs: { condition: service_completed_successfully }
+      init-users: { condition: service_completed_successfully }
+    healthcheck:
+      # 401 means the security plugin is up and refusing anonymous requests.
+      test: ["CMD-SHELL", "curl -s -o /dev/null -w '%{http_code}' --cacert config/certs/root-ca.pem https://localhost:9200 | grep -q 401"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  wazuh.manager:
+    image: *manager-image
+    hostname: wazuh.manager
+    restart: unless-stopped
+    environment:
+      INDEXER_URL: https://wazuh.indexer:9200
+      INDEXER_USERNAME: admin
+      INDEXER_PASSWORD: ${INDEXER_ADMIN_PASSWORD:?run make up, which creates .env}
+      FILEBEAT_SSL_VERIFICATION_MODE: full
+      SSL_CERTIFICATE_AUTHORITIES: /etc/ssl/lab/root-ca.pem
+      SSL_CERTIFICATE: /etc/ssl/lab/filebeat.pem
+      SSL_KEY: /etc/ssl/lab/filebeat-key.pem
+      API_USERNAME: wazuh-wui
+      API_PASSWORD: ${WAZUH_API_PASSWORD:?run make up, which creates .env}
+    volumes:
+      - ./scripts/manager-config.sh:/etc/cont-init.d/1-0-lab-config:ro
+      - type: volume
+        source: lab-init
+        target: /etc/ssl/lab
+        read_only: true
+        volume: { subpath: manager }
+    networks: [lab]
+    depends_on:
+      wazuh.indexer: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "/var/ossec/bin/wazuh-control status | grep -q 'wazuh-remoted is running' && /var/ossec/bin/wazuh-control status | grep -q 'wazuh-authd is running' && /var/ossec/bin/wazuh-control status | grep -q 'wazuh-apid is running'"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+
+  wazuh.dashboard:
+    image: *dashboard-image
+    hostname: wazuh.dashboard
+    restart: unless-stopped
+    environment:
+      INDEXER_USERNAME: admin
+      INDEXER_PASSWORD: ${INDEXER_ADMIN_PASSWORD:?run make up, which creates .env}
+      DASHBOARD_USERNAME: kibanaserver
+      DASHBOARD_PASSWORD: ${DASHBOARD_SERVER_PASSWORD:?run make up, which creates .env}
+      WAZUH_API_URL: https://wazuh.manager
+      API_USERNAME: wazuh-wui
+      API_PASSWORD: ${WAZUH_API_PASSWORD:?run make up, which creates .env}
+    ports:
+      # Bound to this machine only. Nothing else in the lab is published.
+      - "127.0.0.1:${DASHBOARD_PORT:-8443}:5601"
+    volumes:
+      - ./config/dashboard/opensearch_dashboards.yml:/usr/share/wazuh-dashboard/config/opensearch_dashboards.yml:ro
+      - type: volume
+        source: lab-init
+        target: /usr/share/wazuh-dashboard/certs
+        read_only: true
+        volume: { subpath: dashboard }
+    networks: [lab]
+    depends_on:
+      wazuh.indexer: { condition: service_healthy }
+      wazuh.manager: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -o /dev/null -w '%{http_code}' --cacert certs/root-ca.pem https://localhost:5601/app/login | grep -q 200"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  # --- Monitored host -------------------------------------------------------
+
+  victim:
+    build: ./victim
+    image: home-soc-lab/victim:local
+    hostname: victim
+    init: true
+    restart: unless-stopped
+    networks: [lab]
+    depends_on:
+      wazuh.manager: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q \"status='connected'\" /var/ossec/var/run/wazuh-agentd.state"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  # --- Test client ----------------------------------------------------------
+  # Only `make test` starts this. It runs the probe script from the victim
+  # image and exits. It is a test client, not an attacker host.
+
+  probe:
+    image: home-soc-lab/victim:local
+    profiles: [test]
+    entrypoint: ["/usr/local/bin/ssh-probe"]
+    networks: [lab]
+
+networks:
+  lab:
+    name: home-soc-lab
+
+volumes:
+  lab-init:
+  indexer-data:

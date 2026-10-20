@@ -1,0 +1,76 @@
+{
+    "timestamp": "2026-10-20T00:24:46.077+0000",
+    "rule": {
+        "level": 10,
+        "description": "sshd: brute force trying to get access to the system. Non existent user.",
+        "id": "5712",
+        "mitre": {
+            "id": [
+                "T1110"
+            ],
+            "tactic": [
+                "Credential Access"
+            ],
+            "technique": [
+                "Brute Force"
+            ]
+        },
+        "frequency": 8,
+        "firedtimes": 4,
+        "mail": false,
+        "groups": [
+            "syslog",
+            "sshd",
+            "authentication_failures"
+        ],
+        "gdpr": [
+            "IV_35.7.d",
+            "IV_32.2"
+        ],
+        "hipaa": [
+            "164.312.b"
+        ],
+        "nist_800_53": [
+            "SI.4",
+            "AU.14",
+            "AC.7"
+        ],
+        "pci_dss": [
+            "11.4",
+            "10.2.4",
+            "10.2.5"
+        ],
+        "tsc": [
+            "CC6.1",
+            "CC6.8",
+            "CC7.2",
+            "CC7.3"
+        ]
+    },
+    "agent": {
+        "id": "001",
+        "name": "victim",
+        "ip": "172.18.0.4"
+    },
+    "manager": {
+        "name": "wazuh.manager"
+    },
+    "id": "1792455886.1907318",
+    "previous_output": "Oct 20 00:24:44 victim sshd[2329]: Invalid user probe-1792455831 from 172.18.0.6 port 50770\nOct 20 00:24:44 victim sshd[2333]: Invalid user probe-1792455831 from 172.18.0.6 port 50794\nOct 20 00:24:44 victim sshd[2331]: Invalid user probe-1792455831 from 172.18.0.6 port 50780\nOct 20 00:24:44 victim sshd[2327]: Invalid user probe-1792455831 from 172.18.0.6 port 50756\nOct 20 00:23:38 victim sshd[2283]: Invalid user probe-1792455816 from 172.18.0.6 port 42838\nOct 20 00:23:38 victim sshd[2279]: Invalid user probe-1792455816 from 172.18.0.6 port 42822\nOct 20 00:23:38 victim sshd[2281]: Invalid user probe-1792455816 from 172.18.0.6 port 42828",
+    "full_log": "Oct 20 00:24:44 victim sshd[2335]: Invalid user probe-1792455831 from 172.18.0.6 port 50802",
+    "predecoder": {
+        "program_name": "sshd",
+        "timestamp": "Oct 20 00:24:44",
+        "hostname": "victim"
+    },
+    "decoder": {
+        "parent": "sshd",
+        "name": "sshd"
+    },
+    "data": {
+        "srcip": "172.18.0.6",
+        "srcport": "50802",
+        "srcuser": "probe-1792455831"
+    },
+    "location": "/var/log/auth.log"
+}

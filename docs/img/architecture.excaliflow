@@ -1,0 +1,754 @@
+{
+  "type": "excaliflow",
+  "version": 2,
+  "source": "Excaliflow",
+  "activeTabId": "tab_arch",
+  "elements": [
+    {
+      "id": "net",
+      "type": "rectangle",
+      "x": 20,
+      "y": 60,
+      "width": 1165,
+      "height": 520,
+      "text": "",
+      "strokeColor": "#9ca3af",
+      "fillStyle": "none",
+      "strokeStyle": "dashed"
+    },
+    {
+      "id": "net_label",
+      "type": "text",
+      "x": 295,
+      "y": 80,
+      "width": 10,
+      "height": 10,
+      "text": "Docker network \"home-soc-lab\" (nothing published except the dashboard)",
+      "strokeColor": "#6b7280",
+      "fillStyle": "hachure",
+      "fontSize": 15
+    },
+    {
+      "id": "probe",
+      "type": "rectangle",
+      "x": 50,
+      "y": 230,
+      "width": 190,
+      "height": 110,
+      "text": "probe\n(make test only)\n12 failed SSH logins",
+      "strokeColor": "#ef4444",
+      "fillStyle": "hachure"
+    },
+    {
+      "id": "victim",
+      "type": "rectangle",
+      "x": 290,
+      "y": 230,
+      "width": 190,
+      "height": 110,
+      "text": "victim\nUbuntu 24.04\nsshd > rsyslog > auth.log\nWazuh agent 4.14.7",
+      "strokeColor": "#f59e0b",
+      "fillStyle": "hachure"
+    },
+    {
+      "id": "manager",
+      "type": "rectangle",
+      "x": 530,
+      "y": 230,
+      "width": 190,
+      "height": 110,
+      "text": "wazuh.manager\nrules 5710 + 5712\nFilebeat",
+      "strokeColor": "#7928ca",
+      "fillStyle": "hachure"
+    },
+    {
+      "id": "indexer",
+      "type": "rectangle",
+      "x": 770,
+      "y": 230,
+      "width": 190,
+      "height": 110,
+      "text": "wazuh.indexer\nOpenSearch\nwazuh-alerts-*",
+      "strokeColor": "#06b6d4",
+      "fillStyle": "hachure"
+    },
+    {
+      "id": "dashboard",
+      "type": "rectangle",
+      "x": 1000,
+      "y": 230,
+      "width": 170,
+      "height": 110,
+      "text": "wazuh.dashboard",
+      "strokeColor": "#0070f3",
+      "fillStyle": "hachure"
+    },
+    {
+      "id": "browser",
+      "type": "ellipse",
+      "x": 1300,
+      "y": 235,
+      "width": 190,
+      "height": 100,
+      "text": "Your browser\nhttps://localhost:8443",
+      "strokeColor": "#10b981",
+      "fillStyle": "hachure"
+    },
+    {
+      "id": "init",
+      "type": "rectangle",
+      "x": 600,
+      "y": 430,
+      "width": 300,
+      "height": 100,
+      "text": "init-certs + init-users\n(run once, then exit)\nTLS certificates, indexer users",
+      "strokeColor": "#6b7280",
+      "fillStyle": "hachure",
+      "strokeStyle": "dashed"
+    },
+    {
+      "id": "e_probe",
+      "type": "arrow",
+      "x": 145,
+      "y": 285,
+      "x2": 385,
+      "y2": 285,
+      "text": "",
+      "curveOffset": 0,
+      "curveType": "straight",
+      "strokeColor": "#ef4444",
+      "startBinding": {
+        "elementId": "probe",
+        "focusAngle": 0,
+        "side": "right",
+        "gap": 4
+      },
+      "endBinding": {
+        "elementId": "victim",
+        "focusAngle": 3.141592653589793,
+        "side": "left",
+        "gap": 4
+      }
+    },
+    {
+      "id": "e_victim",
+      "type": "arrow",
+      "x": 385,
+      "y": 285,
+      "x2": 625,
+      "y2": 285,
+      "text": "",
+      "curveOffset": 0,
+      "curveType": "straight",
+      "strokeColor": "#f59e0b",
+      "startBinding": {
+        "elementId": "victim",
+        "focusAngle": 0,
+        "side": "right",
+        "gap": 4
+      },
+      "endBinding": {
+        "elementId": "manager",
+        "focusAngle": 3.141592653589793,
+        "side": "left",
+        "gap": 4
+      }
+    },
+    {
+      "id": "e_manager",
+      "type": "arrow",
+      "x": 625,
+      "y": 285,
+      "x2": 865,
+      "y2": 285,
+      "text": "",
+      "curveOffset": 0,
+      "curveType": "straight",
+      "strokeColor": "#7928ca",
+      "startBinding": {
+        "elementId": "manager",
+        "focusAngle": 0,
+        "side": "right",
+        "gap": 4
+      },
+      "endBinding": {
+        "elementId": "indexer",
+        "focusAngle": 3.141592653589793,
+        "side": "left",
+        "gap": 4
+      }
+    },
+    {
+      "id": "e_indexer",
+      "type": "arrow",
+      "x": 865,
+      "y": 285,
+      "x2": 1085,
+      "y2": 285,
+      "text": "",
+      "curveOffset": 0,
+      "curveType": "straight",
+      "strokeColor": "#06b6d4",
+      "startBinding": {
+        "elementId": "indexer",
+        "focusAngle": 0,
+        "side": "right",
+        "gap": 4
+      },
+      "endBinding": {
+        "elementId": "dashboard",
+        "focusAngle": 3.141592653589793,
+        "side": "left",
+        "gap": 4
+      }
+    },
+    {
+      "id": "e_dashboard",
+      "type": "arrow",
+      "x": 1085,
+      "y": 285,
+      "x2": 1395,
+      "y2": 285,
+      "text": "",
+      "curveOffset": 0,
+      "curveType": "straight",
+      "strokeColor": "#0070f3",
+      "startBinding": {
+        "elementId": "dashboard",
+        "focusAngle": 0,
+        "side": "right",
+        "gap": 4
+      },
+      "endBinding": {
+        "elementId": "browser",
+        "focusAngle": 3.141592653589793,
+        "side": "left",
+        "gap": 4
+      }
+    },
+    {
+      "id": "e_init_m",
+      "type": "arrow",
+      "x": 750,
+      "y": 480,
+      "x2": 625,
+      "y2": 285,
+      "text": "",
+      "curveOffset": 0,
+      "curveType": "straight",
+      "strokeColor": "#6b7280",
+      "startBinding": {
+        "elementId": "init",
+        "focusAngle": -2.140836790494607,
+        "side": "top",
+        "gap": 4
+      },
+      "endBinding": {
+        "elementId": "manager",
+        "focusAngle": 1.0007558630951863,
+        "side": "bottom",
+        "gap": 4
+      },
+      "strokeStyle": "dashed",
+      "flowEnabled": false
+    },
+    {
+      "id": "e_init_i",
+      "type": "arrow",
+      "x": 750,
+      "y": 480,
+      "x2": 865,
+      "y2": 285,
+      "text": "",
+      "curveOffset": 0,
+      "curveType": "straight",
+      "strokeColor": "#6b7280",
+      "startBinding": {
+        "elementId": "init",
+        "focusAngle": -1.037952439175508,
+        "side": "top",
+        "gap": 4
+      },
+      "endBinding": {
+        "elementId": "indexer",
+        "focusAngle": 2.1036402144142854,
+        "side": "bottom",
+        "gap": 4
+      },
+      "strokeStyle": "dashed",
+      "flowEnabled": false
+    },
+    {
+      "id": "e_init_d",
+      "type": "arrow",
+      "x": 750,
+      "y": 480,
+      "x2": 1085,
+      "y2": 285,
+      "text": "",
+      "curveOffset": 0,
+      "curveType": "straight",
+      "strokeColor": "#6b7280",
+      "startBinding": {
+        "elementId": "init",
+        "focusAngle": -0.5271459435864096,
+        "side": "right",
+        "gap": 4
+      },
+      "endBinding": {
+        "elementId": "dashboard",
+        "focusAngle": 2.6144467100033837,
+        "side": "left",
+        "gap": 4
+      },
+      "strokeStyle": "dashed",
+      "flowEnabled": false
+    },
+    {
+      "id": "l_probe",
+      "type": "text",
+      "x": 260,
+      "y": 190,
+      "width": 10,
+      "height": 10,
+      "text": "SSH, port 22",
+      "strokeColor": "#374151",
+      "fillStyle": "hachure",
+      "fontSize": 15
+    },
+    {
+      "id": "l_victim",
+      "type": "text",
+      "x": 500,
+      "y": 170,
+      "width": 10,
+      "height": 10,
+      "text": "agent events\n1514/tcp, AES",
+      "strokeColor": "#374151",
+      "fillStyle": "hachure",
+      "fontSize": 15
+    },
+    {
+      "id": "l_manager",
+      "type": "text",
+      "x": 740,
+      "y": 170,
+      "width": 10,
+      "height": 10,
+      "text": "alerts over TLS\n9200/tcp",
+      "strokeColor": "#374151",
+      "fillStyle": "hachure",
+      "fontSize": 15
+    },
+    {
+      "id": "l_indexer",
+      "type": "text",
+      "x": 975,
+      "y": 190,
+      "width": 10,
+      "height": 10,
+      "text": "queries, TLS",
+      "strokeColor": "#374151",
+      "fillStyle": "hachure",
+      "fontSize": 15
+    },
+    {
+      "id": "l_dashboard",
+      "type": "text",
+      "x": 1240,
+      "y": 170,
+      "width": 10,
+      "height": 10,
+      "text": "127.0.0.1:8443\nonly",
+      "strokeColor": "#374151",
+      "fillStyle": "hachure",
+      "fontSize": 15
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff",
+    "scrollX": 0,
+    "scrollY": 0,
+    "zoom": {
+      "value": 0.8
+    },
+    "flowEnabled": true,
+    "flowMode": "pulse",
+    "flowSpeed": 1
+  },
+  "tabs": [
+    {
+      "id": "tab_arch",
+      "name": "home-soc-lab",
+      "elements": [
+        {
+          "id": "net",
+          "type": "rectangle",
+          "x": 20,
+          "y": 60,
+          "width": 1165,
+          "height": 520,
+          "text": "",
+          "strokeColor": "#9ca3af",
+          "fillStyle": "none",
+          "strokeStyle": "dashed"
+        },
+        {
+          "id": "net_label",
+          "type": "text",
+          "x": 295,
+          "y": 80,
+          "width": 10,
+          "height": 10,
+          "text": "Docker network \"home-soc-lab\" (nothing published except the dashboard)",
+          "strokeColor": "#6b7280",
+          "fillStyle": "hachure",
+          "fontSize": 15
+        },
+        {
+          "id": "probe",
+          "type": "rectangle",
+          "x": 50,
+          "y": 230,
+          "width": 190,
+          "height": 110,
+          "text": "probe\n(make test only)\n12 failed SSH logins",
+          "strokeColor": "#ef4444",
+          "fillStyle": "hachure"
+        },
+        {
+          "id": "victim",
+          "type": "rectangle",
+          "x": 290,
+          "y": 230,
+          "width": 190,
+          "height": 110,
+          "text": "victim\nUbuntu 24.04\nsshd > rsyslog > auth.log\nWazuh agent 4.14.7",
+          "strokeColor": "#f59e0b",
+          "fillStyle": "hachure"
+        },
+        {
+          "id": "manager",
+          "type": "rectangle",
+          "x": 530,
+          "y": 230,
+          "width": 190,
+          "height": 110,
+          "text": "wazuh.manager\nrules 5710 + 5712\nFilebeat",
+          "strokeColor": "#7928ca",
+          "fillStyle": "hachure"
+        },
+        {
+          "id": "indexer",
+          "type": "rectangle",
+          "x": 770,
+          "y": 230,
+          "width": 190,
+          "height": 110,
+          "text": "wazuh.indexer\nOpenSearch\nwazuh-alerts-*",
+          "strokeColor": "#06b6d4",
+          "fillStyle": "hachure"
+        },
+        {
+          "id": "dashboard",
+          "type": "rectangle",
+          "x": 1000,
+          "y": 230,
+          "width": 170,
+          "height": 110,
+          "text": "wazuh.dashboard",
+          "strokeColor": "#0070f3",
+          "fillStyle": "hachure"
+        },
+        {
+          "id": "browser",
+          "type": "ellipse",
+          "x": 1300,
+          "y": 235,
+          "width": 190,
+          "height": 100,
+          "text": "Your browser\nhttps://localhost:8443",
+          "strokeColor": "#10b981",
+          "fillStyle": "hachure"
+        },
+        {
+          "id": "init",
+          "type": "rectangle",
+          "x": 600,
+          "y": 430,
+          "width": 300,
+          "height": 100,
+          "text": "init-certs + init-users\n(run once, then exit)\nTLS certificates, indexer users",
+          "strokeColor": "#6b7280",
+          "fillStyle": "hachure",
+          "strokeStyle": "dashed"
+        },
+        {
+          "id": "e_probe",
+          "type": "arrow",
+          "x": 145,
+          "y": 285,
+          "x2": 385,
+          "y2": 285,
+          "text": "",
+          "curveOffset": 0,
+          "curveType": "straight",
+          "strokeColor": "#ef4444",
+          "startBinding": {
+            "elementId": "probe",
+            "focusAngle": 0,
+            "side": "right",
+            "gap": 4
+          },
+          "endBinding": {
+            "elementId": "victim",
+            "focusAngle": 3.141592653589793,
+            "side": "left",
+            "gap": 4
+          }
+        },
+        {
+          "id": "e_victim",
+          "type": "arrow",
+          "x": 385,
+          "y": 285,
+          "x2": 625,
+          "y2": 285,
+          "text": "",
+          "curveOffset": 0,
+          "curveType": "straight",
+          "strokeColor": "#f59e0b",
+          "startBinding": {
+            "elementId": "victim",
+            "focusAngle": 0,
+            "side": "right",
+            "gap": 4
+          },
+          "endBinding": {
+            "elementId": "manager",
+            "focusAngle": 3.141592653589793,
+            "side": "left",
+            "gap": 4
+          }
+        },
+        {
+          "id": "e_manager",
+          "type": "arrow",
+          "x": 625,
+          "y": 285,
+          "x2": 865,
+          "y2": 285,
+          "text": "",
+          "curveOffset": 0,
+          "curveType": "straight",
+          "strokeColor": "#7928ca",
+          "startBinding": {
+            "elementId": "manager",
+            "focusAngle": 0,
+            "side": "right",
+            "gap": 4
+          },
+          "endBinding": {
+            "elementId": "indexer",
+            "focusAngle": 3.141592653589793,
+            "side": "left",
+            "gap": 4
+          }
+        },
+        {
+          "id": "e_indexer",
+          "type": "arrow",
+          "x": 865,
+          "y": 285,
+          "x2": 1085,
+          "y2": 285,
+          "text": "",
+          "curveOffset": 0,
+          "curveType": "straight",
+          "strokeColor": "#06b6d4",
+          "startBinding": {
+            "elementId": "indexer",
+            "focusAngle": 0,
+            "side": "right",
+            "gap": 4
+          },
+          "endBinding": {
+            "elementId": "dashboard",
+            "focusAngle": 3.141592653589793,
+            "side": "left",
+            "gap": 4
+          }
+        },
+        {
+          "id": "e_dashboard",
+          "type": "arrow",
+          "x": 1085,
+          "y": 285,
+          "x2": 1395,
+          "y2": 285,
+          "text": "",
+          "curveOffset": 0,
+          "curveType": "straight",
+          "strokeColor": "#0070f3",
+          "startBinding": {
+            "elementId": "dashboard",
+            "focusAngle": 0,
+            "side": "right",
+            "gap": 4
+          },
+          "endBinding": {
+            "elementId": "browser",
+            "focusAngle": 3.141592653589793,
+            "side": "left",
+            "gap": 4
+          }
+        },
+        {
+          "id": "e_init_m",
+          "type": "arrow",
+          "x": 750,
+          "y": 480,
+          "x2": 625,
+          "y2": 285,
+          "text": "",
+          "curveOffset": 0,
+          "curveType": "straight",
+          "strokeColor": "#6b7280",
+          "startBinding": {
+            "elementId": "init",
+            "focusAngle": -2.140836790494607,
+            "side": "top",
+            "gap": 4
+          },
+          "endBinding": {
+            "elementId": "manager",
+            "focusAngle": 1.0007558630951863,
+            "side": "bottom",
+            "gap": 4
+          },
+          "strokeStyle": "dashed",
+          "flowEnabled": false
+        },
+        {
+          "id": "e_init_i",
+          "type": "arrow",
+          "x": 750,
+          "y": 480,
+          "x2": 865,
+          "y2": 285,
+          "text": "",
+          "curveOffset": 0,
+          "curveType": "straight",
+          "strokeColor": "#6b7280",
+          "startBinding": {
+            "elementId": "init",
+            "focusAngle": -1.037952439175508,
+            "side": "top",
+            "gap": 4
+          },
+          "endBinding": {
+            "elementId": "indexer",
+            "focusAngle": 2.1036402144142854,
+            "side": "bottom",
+            "gap": 4
+          },
+          "strokeStyle": "dashed",
+          "flowEnabled": false
+        },
+        {
+          "id": "e_init_d",
+          "type": "arrow",
+          "x": 750,
+          "y": 480,
+          "x2": 1085,
+          "y2": 285,
+          "text": "",
+          "curveOffset": 0,
+          "curveType": "straight",
+          "strokeColor": "#6b7280",
+          "startBinding": {
+            "elementId": "init",
+            "focusAngle": -0.5271459435864096,
+            "side": "right",
+            "gap": 4
+          },
+          "endBinding": {
+            "elementId": "dashboard",
+            "focusAngle": 2.6144467100033837,
+            "side": "left",
+            "gap": 4
+          },
+          "strokeStyle": "dashed",
+          "flowEnabled": false
+        },
+        {
+          "id": "l_probe",
+          "type": "text",
+          "x": 260,
+          "y": 190,
+          "width": 10,
+          "height": 10,
+          "text": "SSH, port 22",
+          "strokeColor": "#374151",
+          "fillStyle": "hachure",
+          "fontSize": 15
+        },
+        {
+          "id": "l_victim",
+          "type": "text",
+          "x": 500,
+          "y": 170,
+          "width": 10,
+          "height": 10,
+          "text": "agent events\n1514/tcp, AES",
+          "strokeColor": "#374151",
+          "fillStyle": "hachure",
+          "fontSize": 15
+        },
+        {
+          "id": "l_manager",
+          "type": "text",
+          "x": 740,
+          "y": 170,
+          "width": 10,
+          "height": 10,
+          "text": "alerts over TLS\n9200/tcp",
+          "strokeColor": "#374151",
+          "fillStyle": "hachure",
+          "fontSize": 15
+        },
+        {
+          "id": "l_indexer",
+          "type": "text",
+          "x": 975,
+          "y": 190,
+          "width": 10,
+          "height": 10,
+          "text": "queries, TLS",
+          "strokeColor": "#374151",
+          "fillStyle": "hachure",
+          "fontSize": 15
+        },
+        {
+          "id": "l_dashboard",
+          "type": "text",
+          "x": 1240,
+          "y": 170,
+          "width": 10,
+          "height": 10,
+          "text": "127.0.0.1:8443\nonly",
+          "strokeColor": "#374151",
+          "fillStyle": "hachure",
+          "fontSize": 15
+        }
+      ],
+      "scrollX": 0,
+      "scrollY": 0,
+      "zoom": 0.8,
+      "canvasBg": "#ffffff",
+      "flowEnabled": true,
+      "flowMode": "pulse",
+      "flowSpeed": 1
+    }
+  ]
+}

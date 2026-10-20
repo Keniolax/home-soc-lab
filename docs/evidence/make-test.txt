@@ -1,0 +1,9 @@
+PASS  agent 'victim' is active on the manager
+      rule 5712 fired 13s ago and Wazuh mutes it for 60s; waiting 52s
+PASS  made 12 failed SSH logins to victim as 'probe-1792455831'
+PASS  manager raised rule 5710 (invalid user)
+PASS  manager raised rule 5712 (SSH brute force)
+      alerts for 'probe-1792455831': 11 x 5710, 1 x 5712
+PASS  rule 5712 alert is in the indexer (wazuh-alerts-*)
+
+All checks passed. Alerts saved in tmp/last-test/manager-alerts.json

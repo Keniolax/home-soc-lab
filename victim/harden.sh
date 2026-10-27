@@ -3,7 +3,7 @@
 #
 # `make harden` copies this script into the running victim and runs it as root.
 # It is safe to run more than once. Each section names the Wazuh SCA check IDs
-# it fixes. docs/hardening.md lists what was skipped and why.
+# it fixes.
 #
 # The lab's network settings (CIS 3.3) are kernel settings. A container cannot
 # change them itself, so compose.harden.yaml sets them when the victim starts.

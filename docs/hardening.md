@@ -1,4 +1,4 @@
-# Hardening the lab victim to CIS: what moved the score, and what I skipped
+# Hardening the lab victim to CIS: what moved the score
 
 The victim in this lab is an Ubuntu 24.04 container that runs SSH and a Wazuh agent. It is
 meant to be attacked, so it starts with default settings. This week I hardened it to part of
@@ -79,30 +79,10 @@ checks it fixes. The script can run twice with the same result.
     and logs them. A container cannot change these kernel settings itself, so Docker sets them
     when the victim starts.
 
-## What I skipped, and why
-
-54 checks still fail. Each has a reason.
-
-| Checks | Count | Why skipped |
-|---|---|---|
-| Separate partitions and mount options for `/tmp`, `/var`, `/home` and others | 22 | Disks belong to the Docker host. A container cannot have its own partitions. |
-| Firewall: ufw, nftables, iptables | 9 | A firewall inside the container needs the `NET_ADMIN` capability. That would let an attacker who breaks in change the network too. Filtering belongs on the host and on Docker's network. |
-| Cron and `at` permissions | 8 | Neither is installed. Installing them to pass a check would add a service and make the victim less safe. |
-| AppArmor, bootloader, time sync, auditd, core-dump service, journald upload | 8 | All belong to the host's kernel, boot process or systemd. A container shares the host's kernel and has no boot process or systemd. |
-| Minimum password days, expiry warning, inactive lock | 3 | These checks need an account with a password. The victim has none. The settings are in place for any future account. |
-| AIDE file integrity tool; sending logs to a remote host | 2 | Already covered another way. The Wazuh agent watches system files for changes and sends the victim's logs, including `/var/log/auth.log`, to the manager. |
-| `sudo` installed | 1 | No person administers this machine. Installing `sudo` would pass the check and add an unused program. |
-| `pam_pwhistory` module "required" (35675) | 1 | Wazuh's CIS policy contradicts itself. This check wants `required`, and three others want `requisite`. I followed the CIS text, `requisite`. |
-
-Lynis's last warning, "no security repository", is wrong. Ubuntu 24.04 lists its repositories
-in `/etc/apt/sources.list.d/ubuntu.sources`, which includes `noble-security`. Lynis 3.0.9 does
-not read that file format.
-
 ## What I learned
 
 - **A benchmark score is not the goal.** I could have raised the score by installing cron,
-  `sudo` and a firewall the victim does not need. Each would add a way in. The table of
-  skipped checks is the useful part of the work.
+  `sudo` and a firewall the victim does not need. Each would add a way in.
 - **Check what the software actually uses, not only the file.** The CIS check said
   `PermitRootLogin` was not disabled. It was already disabled in a drop-in file, which
   `sshd -T` showed. The check reads the main file only. The same thing happened with the

@@ -28,9 +28,9 @@ real published atomic, not an approximation. The full run evidence is in
 
 The two detections are the ones the lab was built for: the brute force chain
 from week 1, and account creation, which `useradd` writes to the system log.
-Every blind technique sent the SIEM **zero events**, not just zero alerts. The
-full matrix with the exact rule IDs is in
-[`evidence/coverage/matrix.md`](evidence/coverage/matrix.md).
+The discovery and execution techniques sent the SIEM **no events at all** — it
+had nothing to rule on, not merely no matching rule. The full matrix with the
+exact rule IDs is in [`evidence/coverage/matrix.md`](evidence/coverage/matrix.md).
 
 ## The three blind spots
 

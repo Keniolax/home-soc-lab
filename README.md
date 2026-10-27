@@ -155,9 +155,9 @@ from 56 to 65. The detection test still passes afterwards. The write-up,
 
 ![Coverage heatmap](docs/img/coverage-heatmap.png)
 
-The lab detects 2 of the 14 and is blind to 11. Every blind technique sent the SIEM no
-events at all, not just no alerts. The three biggest gaps are no command logging, no network
-sensor, and file watching that runs only every 12 hours. The write-up,
+The lab detects 2 of the 14 and is blind to 11. The discovery and execution techniques sent
+the SIEM no events at all, so there was nothing to rule on. The three biggest gaps are no
+command logging, no network sensor, and file watching that runs only every 12 hours. The write-up,
 [docs/coverage.md](docs/coverage.md), names each gap and the fix. It also produces an
 [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/) layer,
 [`coverage/navigator/coverage-layer.json`](coverage/navigator/coverage-layer.json).

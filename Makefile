@@ -6,7 +6,7 @@ COMPOSE := docker compose
 WAIT_TIMEOUT := 900
 
 .DEFAULT_GOAL := help
-.PHONY: help up down test status logs clean
+.PHONY: help up down test status logs clean audit harden
 
 help: ## List the targets
 	@awk -F ':.*## ' '/^[a-z-]+:.*## / { printf "  make %-8s %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -28,6 +28,14 @@ up: .env ## Start the lab and wait until every service is healthy
 
 test: ## Make failed SSH logins on the victim and check that Wazuh alerts
 	@scripts/test-detection.sh
+
+audit: ## Score the victim with Lynis and the CIS checks (LABEL=before or after)
+	@scripts/audit.sh $(or $(LABEL),now)
+
+harden: ## Harden the victim to a CIS subset (see docs/hardening.md)
+	$(COMPOSE) -f compose.yaml -f compose.harden.yaml up -d --wait --wait-timeout 300 victim
+	$(COMPOSE) cp victim/harden.sh victim:/usr/local/sbin/harden
+	$(COMPOSE) exec -T victim bash /usr/local/sbin/harden
 
 status: ## Show each service and its health
 	$(COMPOSE) ps --all

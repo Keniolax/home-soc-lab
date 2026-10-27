@@ -14,7 +14,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      ca-certificates curl gnupg openssh-client openssh-server rsyslog \
+      ca-certificates curl gnupg lynis openssh-client openssh-server rsyslog \
  && rm -rf /var/lib/apt/lists/*
 
 RUN set -eu; \

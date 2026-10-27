@@ -1,0 +1,39 @@
+# Network settings for the hardened victim (CIS Ubuntu 24.04, section 3.3).
+#
+# These are kernel settings. Each container has its own copy of them, but a
+# container cannot change its own copy, so Docker sets them when the victim
+# starts. `make harden` uses this file; `make up` does not, so a normal lab
+# keeps the soft victim.
+
+services:
+  victim:
+    sysctls:
+      # Do not route packets between networks.
+      net.ipv4.ip_forward: 0
+      net.ipv6.conf.all.forwarding: 0
+      # Do not send or accept ICMP redirects, which can reroute traffic.
+      # Known gap: the kernel resets net.ipv4.conf.all.accept_redirects to 1
+      # whenever ip_forward is set to 0, and Docker sets ip_forward last. So
+      # that one value ends up 1 and CIS check 35612 still fails.
+      net.ipv4.conf.all.send_redirects: 0
+      net.ipv4.conf.default.send_redirects: 0
+      net.ipv4.conf.all.accept_redirects: 0
+      net.ipv4.conf.default.accept_redirects: 0
+      net.ipv6.conf.all.accept_redirects: 0
+      net.ipv6.conf.default.accept_redirects: 0
+      net.ipv4.conf.all.secure_redirects: 0
+      net.ipv4.conf.default.secure_redirects: 0
+      # Drop packets whose source address could not have arrived on that interface.
+      net.ipv4.conf.all.rp_filter: 1
+      net.ipv4.conf.default.rp_filter: 1
+      # Refuse packets that choose their own route.
+      net.ipv4.conf.all.accept_source_route: 0
+      net.ipv4.conf.default.accept_source_route: 0
+      net.ipv6.conf.all.accept_source_route: 0
+      net.ipv6.conf.default.accept_source_route: 0
+      # Log packets with impossible source addresses.
+      net.ipv4.conf.all.log_martians: 1
+      net.ipv4.conf.default.log_martians: 1
+      # Ignore IPv6 router advertisements, which can set a rogue default route.
+      net.ipv6.conf.all.accept_ra: 0
+      net.ipv6.conf.default.accept_ra: 0

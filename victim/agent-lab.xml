@@ -15,4 +15,18 @@
   <client>
     <auto_restart>no</auto_restart>
   </client>
+
+  <!-- Real-time file integrity monitoring for the paths that persistence and
+       defence-evasion techniques write to. The default agent config watches a
+       few system directories on a 12-hour scan; this watches these in real
+       time (inotify), so a change raises an alert at once. Week 4's coverage
+       run found these paths blind or caught only on the next scan; week 5
+       closes that. These directories exist when the agent starts, so the
+       real-time watches are set at start, not only after the first scan.
+       inotify needs no extra privilege, so it works where auditd does not. -->
+  <syscheck>
+    <directories realtime="yes" check_all="yes" report_changes="yes">/root</directories>
+    <directories realtime="yes" check_all="yes" report_changes="yes">/etc/profile.d</directories>
+    <directories realtime="yes" check_all="yes">/etc/cron.d,/etc/systemd/system</directories>
+  </syscheck>
 </ossec_config>

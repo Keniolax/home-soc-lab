@@ -1,0 +1,38 @@
+35547 Ensure local login warning banner is configured properly.
+35548 Ensure remote login warning banner is configured properly.
+35608 Ensure ip forwarding is disabled.
+35609 Ensure packet redirect sending is disabled.
+35612 Ensure icmp redirects are not accepted.
+35613 Ensure secure icmp redirects are not accepted.
+35614 Ensure reverse path filtering is enabled.
+35615 Ensure source routed packets are not accepted.
+35616 Ensure suspicious packets are logged.
+35618 Ensure ipv6 router advertisements are not accepted.
+35640 Ensure permissions on /etc/ssh/sshd_config are configured.
+35643 Ensure sshd access is configured.
+35644 Ensure sshd Banner is configured.
+35646 Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured.
+35647 Ensure sshd DisableForwarding is enabled.
+35652 Ensure sshd LoginGraceTime is configured.
+35654 Ensure sshd MACs are configured.
+35655 Ensure sshd MaxAuthTries is configured.
+35657 Ensure sshd MaxStartups is configured.
+35659 Ensure sshd PermitRootLogin is disabled.
+35668 Ensure access to the su command is restricted.
+35671 Ensure libpam-pwquality is installed.
+35672 Ensure pam_unix module is enabled.
+35673 Ensure pam_faillock module is enabled.
+35674 Ensure pam_pwquality module is enabled.
+35676 Ensure password failed attempts lockout is configured.
+35677 Ensure password unlock time is configured.
+35678 Ensure password failed attempts lockout includes root account.
+35687 Ensure password history remember is configured.
+35688 Ensure password history is enforced for the root user.
+35689 Ensure pam_pwhistory includes use_authtok.
+35690 Ensure pam_unix does not include nullok.
+35693 Ensure pam_unix includes use_authtok.
+35694 Ensure password expiration is configured.
+35703 Ensure root user umask is configured.
+35705 Ensure default user shell timeout is configured.
+35719 Ensure rsyslog log file creation mode is configured.
+35722 Ensure access to all logfiles has been configured.

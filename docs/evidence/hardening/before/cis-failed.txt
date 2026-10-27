@@ -1,0 +1,93 @@
+35510 Ensure /tmp is a separate partition.
+35511 Ensure nodev option set on /tmp partition.
+35512 Ensure nosuid option set on /tmp partition.
+35513 Ensure noexec option set on /tmp partition.
+35518 Ensure separate partition exists for /home.
+35519 Ensure nodev option set on /home partition.
+35520 Ensure nosuid option set on /home partition.
+35521 Ensure separate partition exists for /var.
+35522 Ensure nodev option set on /var partition.
+35523 Ensure nosuid option set on /var partition.
+35524 Ensure separate partition exists for /var/tmp.
+35525 Ensure nodev option set on /var/tmp partition.
+35526 Ensure nosuid option set on /var/tmp partition.
+35527 Ensure noexec option set on /var/tmp partition.
+35528 Ensure separate partition exists for /var/log.
+35529 Ensure nodev option set on /var/log partition.
+35530 Ensure nosuid option set on /var/log partition.
+35531 Ensure noexec option set on /var/log partition.
+35532 Ensure separate partition exists for /var/log/audit.
+35533 Ensure nodev option set on /var/log/audit partition.
+35534 Ensure nosuid option set on /var/log/audit partition.
+35535 Ensure noexec option set on /var/log/audit partition.
+35536 Ensure AppArmor is installed.
+35541 Ensure access to bootloader config is configured.
+35543 Ensure core dumps are restricted.
+35547 Ensure local login warning banner is configured properly.
+35548 Ensure remote login warning banner is configured properly.
+35591 Ensure chrony is running as user _chrony.
+35594 Ensure permissions on /etc/crontab are configured.
+35595 Ensure permissions on /etc/cron.hourly are configured.
+35596 Ensure permissions on /etc/cron.daily are configured.
+35597 Ensure permissions on /etc/cron.weekly are configured.
+35598 Ensure permissions on /etc/cron.monthly are configured.
+35599 Ensure permissions on /etc/cron.d are configured.
+35600 Ensure crontab is restricted to authorized users.
+35601 Ensure at is restricted to authorized users.
+35608 Ensure ip forwarding is disabled.
+35609 Ensure packet redirect sending is disabled.
+35612 Ensure icmp redirects are not accepted.
+35613 Ensure secure icmp redirects are not accepted.
+35614 Ensure reverse path filtering is enabled.
+35615 Ensure source routed packets are not accepted.
+35616 Ensure suspicious packets are logged.
+35618 Ensure ipv6 router advertisements are not accepted.
+35619 Ensure a single firewall configuration utility is in use.
+35620 Ensure ufw is installed.
+35621 Ensure iptables-persistent is not installed with ufw.
+35623 Ensure ufw loopback traffic is configured.
+35624 Ensure ufw default deny firewall policy.
+35625 Ensure nftables is installed.
+35633 Ensure iptables packages are installed.
+35634 Ensure nftables is not in use with iptables.
+35635 Ensure ufw is not in use with iptables.
+35640 Ensure permissions on /etc/ssh/sshd_config are configured.
+35643 Ensure sshd access is configured.
+35644 Ensure sshd Banner is configured.
+35646 Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured.
+35647 Ensure sshd DisableForwarding is enabled.
+35652 Ensure sshd LoginGraceTime is configured.
+35654 Ensure sshd MACs are configured.
+35655 Ensure sshd MaxAuthTries is configured.
+35657 Ensure sshd MaxStartups is configured.
+35659 Ensure sshd PermitRootLogin is disabled.
+35662 Ensure sudo is installed.
+35668 Ensure access to the su command is restricted.
+35671 Ensure libpam-pwquality is installed.
+35672 Ensure pam_unix module is enabled.
+35673 Ensure pam_faillock module is enabled.
+35674 Ensure pam_pwquality module is enabled.
+35675 Ensure pam_pwhistory module is enabled.
+35676 Ensure password failed attempts lockout is configured.
+35677 Ensure password unlock time is configured.
+35678 Ensure password failed attempts lockout includes root account.
+35687 Ensure password history remember is configured.
+35688 Ensure password history is enforced for the root user.
+35689 Ensure pam_pwhistory includes use_authtok.
+35690 Ensure pam_unix does not include nullok.
+35693 Ensure pam_unix includes use_authtok.
+35694 Ensure password expiration is configured.
+35695 Ensure minimum password days is configured.
+35696 Ensure password expiration warning days is configured.
+35698 Ensure inactive password lock is configured.
+35703 Ensure root user umask is configured.
+35705 Ensure default user shell timeout is configured.
+35710 Ensure systemd-journal-upload authentication is configured.
+35719 Ensure rsyslog log file creation mode is configured.
+35720 Ensure rsyslog is configured to send logs to a remote log host.
+35722 Ensure access to all logfiles has been configured.
+35723 Ensure auditd packages are installed.
+35756 Ensure audit tools owner is configured.
+35757 Ensure audit tools group owner is configured.
+35758 Ensure AIDE is installed.
+35770 Ensure permissions on /etc/security/opasswd are configured.

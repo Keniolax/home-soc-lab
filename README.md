@@ -129,11 +129,22 @@ PASS  rule 5712 alert is in the indexer (wazuh-alerts-*)
 |---|---|
 | `make status` | Shows each service and its health |
 | `make logs` | Follows the logs of every service |
+| `make audit LABEL=before` | Scores the victim with Lynis and the CIS checks |
+| `make harden` | Hardens the victim to part of the CIS benchmark |
 | `make down` | Stops the lab and deletes its containers, volumes and certificates |
 | `make clean` | Also deletes `.env` and the victim image |
 
 `make down` leaves nothing running. The next `make up` starts a fresh lab with new
 certificates and the same passwords.
+
+---
+
+## Hardening
+
+`make harden` raises the victim's CIS score from 48% to 71%, and its Lynis hardening index from
+56 to 65. The detection test still passes afterwards. The write-up,
+[docs/hardening.md](docs/hardening.md), lists every change and every skipped check with its
+reason.
 
 ---
 

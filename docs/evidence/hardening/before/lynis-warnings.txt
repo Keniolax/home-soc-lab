@@ -1,0 +1,2 @@
+PKGS-7388|Can't find any security repository in /etc/apt/sources.list or sources.list.d directory
+PKGS-7392|Found one or more vulnerable packages.

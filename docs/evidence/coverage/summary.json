@@ -1,0 +1,32 @@
+{
+  "runid": "160947",
+  "total": 14,
+  "counts": {
+    "detected": 2,
+    "logged": 1,
+    "blind": 11
+  },
+  "blind_by_tactic": {
+    "discovery": 6,
+    "execution": 1,
+    "persistence": 1,
+    "defense-evasion": 2,
+    "credential-access": 1
+  },
+  "verdicts": {
+    "T1110.001": "detected",
+    "T1136.001": "detected",
+    "T1087.001": "blind",
+    "T1082": "blind",
+    "T1033": "blind",
+    "T1057": "blind",
+    "T1083": "blind",
+    "T1046": "blind",
+    "T1059.004": "blind",
+    "T1098.004": "blind",
+    "T1546.004": "logged",
+    "T1222.002": "blind",
+    "T1070.003": "blind",
+    "T1552.001": "blind"
+  }
+}

@@ -1,0 +1,395 @@
+{
+  "name": "home-soc-lab detection coverage (week 4)",
+  "versions": {
+    "attack": "17",
+    "navigator": "4.9.1",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "What the home-soc-lab SIEM detects, logs, or is blind to across 14 emulated Linux ATT&CK techniques. Green: a rule fired. Amber: a sensor recorded it but no rule fired. Red: nothing on the host saw it.",
+  "techniques": [
+    {
+      "techniqueID": "T1110.001",
+      "tactic": "credential-access",
+      "color": "#2e9e54",
+      "comment": "Detected (a rule fired): rule(s) 5710, 5712 fired in the run window",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "Brute Force: Password Guessing"
+        },
+        {
+          "name": "verdict",
+          "value": "detected"
+        },
+        {
+          "name": "emulated",
+          "value": "(lab ssh-probe: 12 failed logins as cov-brute-160947)"
+        },
+        {
+          "name": "rules fired",
+          "value": "5710 (L5), 5712 (L10)"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1136.001",
+      "tactic": "persistence",
+      "color": "#2e9e54",
+      "comment": "Detected (a rule fired): rule(s) 5902 fired in the run window",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "Create Account: Local Account"
+        },
+        {
+          "name": "verdict",
+          "value": "detected"
+        },
+        {
+          "name": "emulated",
+          "value": "useradd -M -N -r -s /bin/bash -c evil_account cov_evil_160947"
+        },
+        {
+          "name": "rules fired",
+          "value": "5902 (L8)"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1087.001",
+      "tactic": "discovery",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "Account Discovery: Local Account"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "cat /etc/passwd > /tmp/cov-T1087.001.txt\ncat /tmp/cov-T1087.001.txt"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1082",
+      "tactic": "discovery",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "System Information Discovery"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "uname -a >> \"/tmp/cov-T1082.txt\"\nif [ -f /etc/lsb-release ]; then cat /etc/lsb-release >> \"/tmp/cov-T1082.txt\"; fi\nif [ -f /etc/redhat-release ]; then cat /etc/redhat-release >> \"/tmp/cov-T1082.txt\"; fi\nif [ -f /etc/issu"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1033",
+      "tactic": "discovery",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "System Owner/User Discovery"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "users\nw\nwho"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1057",
+      "tactic": "discovery",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "Process Discovery"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "ps >> /tmp/cov-T1057.txt\nps aux >> /tmp/cov-T1057.txt"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1083",
+      "tactic": "discovery",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "File and Directory Discovery"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "cd $HOME && find . -print | sed -e 's;[^/]*/;|__;g;s;__|; |;g' > /tmp/cov-T1083.txt\nif [ -f /etc/mtab ]; then cat /etc/mtab >> /tmp/cov-T1083.txt; fi;\nfind . -type f -iname *.pdf >> /tmp/cov-T1083.txt\ncat /tmp/cov-T1083."
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1046",
+      "tactic": "discovery",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "Network Service Discovery"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "for port in {1..65535}; do (2>/dev/null echo >/dev/tcp/wazuh.indexer/$port) && echo port $port is open ; done"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1059.004",
+      "tactic": "execution",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "Command and Scripting Interpreter: Unix Shell"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "for i in $(seq 1 5); do echo \"$i, Atomic Red Team was here!\"; sleep 1; done"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1098.004",
+      "tactic": "persistence",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "Account Manipulation: SSH Authorized Keys"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "if [ -f ~/.ssh/authorized_keys ]; then ssh_authorized_keys=$(cat ~/.ssh/authorized_keys); echo \"$ssh_authorized_keys\" > ~/.ssh/authorized_keys; fi;"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1546.004",
+      "tactic": "persistence",
+      "color": "#d9a406",
+      "comment": "Logged, not detected: file is in the agent's FIM scope, but FIM is a scheduled scan, so no alert fired in the window",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "Event Triggered Execution: Unix Shell Configuration Modification"
+        },
+        {
+          "name": "verdict",
+          "value": "logged"
+        },
+        {
+          "name": "emulated",
+          "value": "echo '# Atomic Red Team was here... T1546.004' >> /etc/profile.d/bash_completion.sh"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1222.002",
+      "tactic": "defense-evasion",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "File and Directory Permissions Modification: Linux and Mac File and Directory Permissions Modification"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "chmod 777 /tmp/cov-T1222.txt"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1070.003",
+      "tactic": "defense-evasion",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "Indicator Removal: Clear Command History"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "echo \"\" > ~/.bash_history"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    },
+    {
+      "techniqueID": "T1552.001",
+      "tactic": "credential-access",
+      "color": "#c0392b",
+      "comment": "Blind (no telemetry): no rule fired and no host sensor records this behaviour",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "name",
+          "value": "Unsecured Credentials: Credentials In Files"
+        },
+        {
+          "name": "verdict",
+          "value": "blind"
+        },
+        {
+          "name": "emulated",
+          "value": "grep -ri password /etc\nexit 0"
+        },
+        {
+          "name": "rules fired",
+          "value": "none"
+        }
+      ],
+      "showSubtechniques": false
+    }
+  ],
+  "legendItems": [
+    {
+      "label": "Detected (a rule fired)",
+      "color": "#2e9e54"
+    },
+    {
+      "label": "Logged, not detected",
+      "color": "#d9a406"
+    },
+    {
+      "label": "Blind (no telemetry)",
+      "color": "#c0392b"
+    }
+  ],
+  "sorting": 0,
+  "hideDisabled": false,
+  "showTacticRowBackground": true,
+  "tacticRowBackground": "#205b8f",
+  "selectTechniquesAcrossTactics": true
+}

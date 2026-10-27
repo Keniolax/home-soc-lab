@@ -141,8 +141,8 @@ certificates and the same passwords.
 
 ## Hardening
 
-`make harden` raises the victim's CIS score from 48% to 71%, and its Lynis hardening index from
-56 to 65. The detection test still passes afterwards. The write-up,
+`make harden` raises the victim's CIS score from 48% to 70-71%, and its Lynis hardening index
+from 56 to 65. The detection test still passes afterwards. The write-up,
 [docs/hardening.md](docs/hardening.md), lists every change and every skipped check with its
 reason.
 

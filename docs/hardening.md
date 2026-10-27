@@ -15,7 +15,8 @@ the CIS Ubuntu Linux 24.04 Benchmark v1.0.0 and measured the change.
 | Lynis warnings | 2 | **1** |
 
 38 failed checks now pass. Installing the password-quality module made 6 more checks apply, and
-all 6 pass. The week 1 detection test still passes after hardening, so the lab still sees
+all 6 pass. On some runs the score is 70%, not 71%: one network check depends on the order in
+which Docker applies kernel settings (see "What I learned"). The week 1 detection test still passes after hardening, so the lab still sees
 attacks.
 
 Every number above comes from [`docs/evidence/hardening/`](evidence/hardening/): one folder

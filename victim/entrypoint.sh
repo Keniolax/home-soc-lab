@@ -16,6 +16,11 @@ ssh-keygen -A >/dev/null
 mkdir -p /run/sshd
 touch /var/log/auth.log /var/log/syslog
 
+# An empty ld.so.preload is a no-op for the dynamic linker, but its presence
+# lets the agent watch it in real time from the start. Anything written to it
+# then raises an alert at once (dynamic linker hijacking, ATT&CK T1574.006).
+touch /etc/ld.so.preload
+
 rm -f /run/rsyslogd.pid
 rsyslogd
 /usr/sbin/sshd

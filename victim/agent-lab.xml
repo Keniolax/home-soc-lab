@@ -28,5 +28,8 @@
     <directories realtime="yes" check_all="yes" report_changes="yes">/root</directories>
     <directories realtime="yes" check_all="yes" report_changes="yes">/etc/profile.d</directories>
     <directories realtime="yes" check_all="yes">/etc/cron.d,/etc/systemd/system</directories>
+    <!-- The dynamic linker preload file: present only when something wants code
+         loaded into every program. Its appearance is itself suspicious. -->
+    <directories realtime="yes" check_all="yes" report_changes="yes">/etc/ld.so.preload</directories>
   </syscheck>
 </ossec_config>

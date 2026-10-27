@@ -1,0 +1,192 @@
+# Techniques emulated for the week-4 detection-coverage assessment.
+#
+# Each entry runs one real Atomic Red Team atomic (pinned by commit and GUID)
+# on the monitored victim, then the scorer checks what the Wazuh SIEM did with
+# it: did a rule fire (detected), did a sensor record it but no rule fire
+# (logged), or did nothing see it at all (blind).
+#
+# `atomic.command` is copied verbatim from the pinned ART repo. `run-coverage`
+# verifies that copy against the clone before it runs anything, then fills the
+# atomic's input arguments with the values in `args` (exactly as Invoke-Atomic
+# would) and runs the result on the victim. The only hand-written commands are
+# `setup`/`cleanup` (lab housekeeping) and the T1110 case, which has no Linux
+# sshd atomic in ART and is driven by the lab's own probe.
+
+art_source:
+  repo: https://github.com/redcanaryco/atomic-red-team
+  commit: 1edbe50b8f49560110e6cf85161c1ef75a5732b7   # 2026-10-21
+  license: MIT
+
+techniques:
+  - id: T1110.001
+    attack_name: "Brute Force: Password Guessing"
+    tactic: credential-access
+    probe: true                 # driven by the lab's ssh-probe, not an ART atomic
+    args: { count: 12 }
+    expect: detected
+    note: >
+      ART's Linux T1110.001 atomics brute-force sudo, not sshd. The lab's own
+      probe makes 12 failed SSH logins as a user that does not exist, which is
+      the behaviour the lab was built to catch.
+
+  - id: T1136.001
+    attack_name: "Create Account: Local Account"
+    tactic: persistence
+    atomic:
+      guid: 40d8eabd-e394-46f6-8785-b9bfa1d011d2
+      name: "Create a user account on a Linux system"
+      executor: bash
+      command: "useradd -M -N -r -s /bin/bash -c evil_account #{username}\n"
+    args: { username: "cov_evil" }       # suffixed with the run id at runtime
+    runid_args: [username]
+    cleanup: "userdel #{username} 2>/dev/null || true"
+    expect: detected
+
+  - id: T1087.001
+    attack_name: "Account Discovery: Local Account"
+    tactic: discovery
+    atomic:
+      guid: f8aab3dd-5990-4bf8-b8ab-2226c951696f
+      name: "Enumerate all accounts (Local)"
+      executor: sh
+      command: "cat /etc/passwd > #{output_file}\ncat #{output_file}\n"
+    args: { output_file: "/tmp/cov-T1087.001.txt" }
+    cleanup: "rm -f #{output_file}"
+    expect: blind
+
+  - id: T1082
+    attack_name: "System Information Discovery"
+    tactic: discovery
+    atomic:
+      guid: cccb070c-df86-4216-a5bc-9fb60c74e27c
+      name: "List OS Information"
+      executor: sh
+      command: "uname -a >> \"#{output_file}\"\nif [ -f /etc/lsb-release ]; then cat /etc/lsb-release >> \"#{output_file}\"; fi\nif [ -f /etc/redhat-release ]; then cat /etc/redhat-release >> \"#{output_file}\"; fi\nif [ -f /etc/issue ]; then cat /etc/issue >> \"#{output_file}\"; fi\nif [ -f /etc/os-release ]; then cat /etc/os-release >> \"#{output_file}\"; fi\nuptime >> \"#{output_file}\"\ncat \"#{output_file}\" 2>/dev/null\n"
+    args: { output_file: "/tmp/cov-T1082.txt" }
+    cleanup: "rm -f #{output_file}"
+    expect: blind
+
+  - id: T1033
+    attack_name: "System Owner/User Discovery"
+    tactic: discovery
+    atomic:
+      guid: 2a9b677d-a230-44f4-ad86-782df1ef108c
+      name: "System Owner/User Discovery"
+      executor: sh
+      command: "users\nw\nwho\n"
+    args: {}
+    expect: blind
+
+  - id: T1057
+    attack_name: "Process Discovery"
+    tactic: discovery
+    atomic:
+      guid: 4ff64f0b-aaf2-4866-b39d-38d9791407cc
+      name: "Process Discovery - ps"
+      executor: sh
+      command: "ps >> #{output_file}\nps aux >> #{output_file}\n"
+    args: { output_file: "/tmp/cov-T1057.txt" }
+    cleanup: "rm -f #{output_file}"
+    expect: blind
+
+  - id: T1083
+    attack_name: "File and Directory Discovery"
+    tactic: discovery
+    atomic:
+      guid: 13c5e1ae-605b-46c4-a79f-db28c77ff24e
+      name: "Nix File and Directory Discovery 2"
+      executor: sh
+      command: "cd $HOME && find . -print | sed -e 's;[^/]*/;|__;g;s;__|; |;g' > #{output_file}\nif [ -f /etc/mtab ]; then cat /etc/mtab >> #{output_file}; fi;\nfind . -type f -iname *.pdf >> #{output_file}\ncat #{output_file}\nfind . -type f -name \".*\"\n"
+    args: { output_file: "/tmp/cov-T1083.txt" }
+    cleanup: "rm -f #{output_file}"
+    timeout: 120
+    expect: blind
+
+  - id: T1046
+    attack_name: "Network Service Discovery"
+    tactic: discovery
+    atomic:
+      guid: 68e907da-2539-48f6-9fc9-257a78c05540
+      name: "Port Scan"
+      executor: bash
+      command: "for port in {1..65535}; do (2>/dev/null echo >/dev/tcp/#{host}/$port) && echo port $port is open ; done\n"
+    args: { host: "wazuh.indexer" }     # a lab container, never an outside host
+    timeout: 180
+    expect: blind
+
+  - id: T1059.004
+    attack_name: "Command and Scripting Interpreter: Unix Shell"
+    tactic: execution
+    atomic:
+      guid: b04ed73c-7d43-4dc8-b563-a2fc595cba1a
+      name: "Command line scripts"
+      executor: sh
+      command: "for i in $(seq 1 5); do echo \"$i, Atomic Red Team was here!\"; sleep 1; done\n"
+    args: {}
+    timeout: 30
+    expect: blind
+
+  - id: T1098.004
+    attack_name: "Account Manipulation: SSH Authorized Keys"
+    tactic: persistence
+    setup: "mkdir -p ~/.ssh && echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAACoveragetestkey attacker@lab' >> ~/.ssh/authorized_keys"
+    atomic:
+      guid: 342cc723-127c-4d3a-8292-9c0c6b4ecadc
+      name: "Modify SSH Authorized Keys"
+      executor: sh
+      command: "if [ -f ~/.ssh/authorized_keys ]; then ssh_authorized_keys=$(cat ~/.ssh/authorized_keys); echo \"$ssh_authorized_keys\" > ~/.ssh/authorized_keys; fi;\n"
+    args: {}
+    cleanup: "rm -f ~/.ssh/authorized_keys"
+    expect: blind
+    note: "setup seeds a foreign key first, so the atomic has an authorized_keys file to rewrite."
+
+  - id: T1546.004
+    attack_name: "Event Triggered Execution: Unix Shell Configuration Modification"
+    tactic: persistence
+    atomic:
+      guid: 8fe2ccfd-f079-4c03-b1a9-bd9b362b67d4
+      name: "System shell profile scripts"
+      executor: sh
+      command: "echo '#{text_to_append}' >> /etc/profile.d/bash_completion.sh\n"
+    args: { text_to_append: "# Atomic Red Team was here... T1546.004" }
+    cleanup: "sed -i '/Atomic Red Team was here... T1546.004/d' /etc/profile.d/bash_completion.sh 2>/dev/null || true"
+    fim_paths: ["/etc/profile.d/bash_completion.sh"]
+    expect: logged
+    note: "The file is inside the agent's FIM scope (/etc), but FIM is a 12-hour scan, so no alert fires in the run window."
+
+  - id: T1222.002
+    attack_name: "File and Directory Permissions Modification: Linux and Mac File and Directory Permissions Modification"
+    tactic: defense-evasion
+    setup: "echo coverage-target > /tmp/cov-T1222.txt"
+    atomic:
+      guid: 34ca1464-de9d-40c6-8c77-690adf36a135
+      name: "chmod - Change file or folder mode (numeric mode)"
+      executor: sh
+      command: "chmod #{numeric_mode} #{file_or_folder}\n"
+    args: { numeric_mode: "777", file_or_folder: "/tmp/cov-T1222.txt" }
+    cleanup: "rm -f /tmp/cov-T1222.txt"
+    expect: blind
+
+  - id: T1070.003
+    attack_name: "Indicator Removal: Clear Command History"
+    tactic: defense-evasion
+    setup: "echo 'id; whoami; cat /etc/shadow' >> ~/.bash_history"
+    atomic:
+      guid: cbf506a5-dd78-43e5-be7e-a46b7c7a0a11
+      name: "Clear Bash history (echo)"
+      executor: sh
+      command: "echo \"\" > #{history_path}\n"
+    args: { history_path: "~/.bash_history" }
+    expect: blind
+
+  - id: T1552.001
+    attack_name: "Unsecured Credentials: Credentials In Files"
+    tactic: credential-access
+    atomic:
+      guid: bd4cf0d1-7646-474e-8610-78ccf5a097c4
+      name: "Extract passwords with grep"
+      executor: sh
+      command: "grep -ri password #{file_path}\nexit 0\n"
+    args: { file_path: "/etc" }       # bounded to /etc; the atomic default is /
+    timeout: 60
+    expect: blind

@@ -6,7 +6,7 @@ COMPOSE := docker compose
 WAIT_TIMEOUT := 900
 
 .DEFAULT_GOAL := help
-.PHONY: help up down test status logs clean audit harden
+.PHONY: help up down test status logs clean audit harden coverage
 
 help: ## List the targets
 	@awk -F ':.*## ' '/^[a-z-]+:.*## / { printf "  make %-8s %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -31,6 +31,9 @@ test: ## Make failed SSH logins on the victim and check that Wazuh alerts
 
 audit: ## Score the victim with Lynis and the CIS checks (LABEL=before or after)
 	@scripts/audit.sh $(or $(LABEL),now)
+
+coverage: ## Emulate ATT&CK techniques and map what the SIEM detects (see docs/coverage.md)
+	@coverage/run-coverage.sh
 
 harden: ## Harden the victim to a CIS subset (see docs/hardening.md)
 	$(COMPOSE) -f compose.yaml -f compose.harden.yaml up -d --wait --wait-timeout 300 victim

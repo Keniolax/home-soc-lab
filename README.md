@@ -131,6 +131,7 @@ PASS  rule 5712 alert is in the indexer (wazuh-alerts-*)
 | `make logs` | Follows the logs of every service |
 | `make audit LABEL=before` | Scores the victim with Lynis and the CIS checks |
 | `make harden` | Hardens the victim to part of the CIS benchmark |
+| `make coverage` | Emulates ATT&CK techniques and maps what the SIEM detects |
 | `make down` | Stops the lab and deletes its containers, volumes and certificates |
 | `make clean` | Also deletes `.env` and the victim image |
 
@@ -144,6 +145,22 @@ certificates and the same passwords.
 `make harden` raises the victim's CIS score from 48% to 70-71%, and its Lynis hardening index
 from 56 to 65. The detection test still passes afterwards. The write-up,
 [docs/hardening.md](docs/hardening.md), lists every change and what it taught.
+
+---
+
+## Detection coverage
+
+`make coverage` runs 14 real ATT&CK techniques on the victim and scores each one: detected
+(a Wazuh rule fired), logged (a sensor saw it, no rule fired), or blind (nothing saw it).
+
+![Coverage heatmap](docs/img/coverage-heatmap.png)
+
+The lab detects 2 of the 14 and is blind to 11. Every blind technique sent the SIEM no
+events at all, not just no alerts. The three biggest gaps are no command logging, no network
+sensor, and file watching that runs only every 12 hours. The write-up,
+[docs/coverage.md](docs/coverage.md), names each gap and the fix. It also produces an
+[ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/) layer,
+[`coverage/navigator/coverage-layer.json`](coverage/navigator/coverage-layer.json).
 
 ---
 
@@ -217,6 +234,17 @@ lines with no header. The classic `Oct 19 23:43:31 victim sshd[1340]:` format is
 Wazuh decoder accepts.
 *Cost accepted:* a third process in the victim container.
 
+**Decision: `make coverage` runs the atomics' commands directly, not through Invoke-Atomic.**
+*Alternatives considered:* the official PowerShell runner, Invoke-AtomicRedTeam; a hand-written
+imitation of the atomics.
+*Why:* the runner reads each atomic from the Atomic Red Team repo pinned to one commit, checks
+the command against that commit, then fills its input arguments and runs it. The behaviour is
+the real published atomic, with its GUID, and the victim stays a lean Linux host with no
+PowerShell. A coverage number is only honest if it separates "a rule fired" from "a log
+existed," so the scorer has three verdicts, not two.
+*Cost accepted:* I resolve the atomic's input arguments myself instead of letting Invoke-Atomic
+do it, and I run a Linux subset, not the Windows atomics.
+
 ## What I chose not to build
 
 - **No Vagrant.** Containers start faster and need less memory. The lab does not need full
@@ -227,8 +255,8 @@ Wazuh decoder accepts.
 
 ## Limitations
 
-- **One detection.** The lab tests one rule chain: SSH logins as users that do not exist. It
-  does not test logins as real users, other services, or file integrity alerts.
+- **Two detections.** The lab catches SSH brute force and local account creation. `make
+  coverage` shows it is blind to 11 of 14 other techniques; see [docs/coverage.md](docs/coverage.md).
 - **No attacker host.** The probe only proves that the detection works. It is not a red-team
   tool.
 - **No Windows telemetry.** Windows detections are not covered yet.

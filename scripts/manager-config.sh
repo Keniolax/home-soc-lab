@@ -29,10 +29,26 @@ sed -i \
   -e 's|/etc/filebeat/certs/filebeat-key\.pem|/etc/ssl/lab/filebeat-key.pem|' \
   "$conf"
 
+# 3. Let a rebuilt agent take over its old name.
+# By default the manager refuses a new agent named like an existing one until
+# the old one has been disconnected for an hour, so a recreated victim fails
+# with "Duplicate agent name". In this lab the old victim is always gone.
+if ! grep -q '<force>' "$conf"; then
+  sed -i 's|<purge>yes</purge>|<purge>yes</purge>\
+    <force>\
+      <enabled>yes</enabled>\
+      <key_mismatch>yes</key_mismatch>\
+      <disconnected_time enabled="yes">0</disconnected_time>\
+      <after_registration_time>0</after_registration_time>\
+    </force>|' "$conf"
+fi
+
 if sed -n '/<vulnerability-detection>/,/<\/vulnerability-detection>/p' "$conf" | grep -q '<enabled>yes</enabled>'; then
   echo "manager-config: vulnerability detection is still on in $conf" >&2
   exit 1
 fi
 grep -q '<host>https://wazuh.indexer:9200</host>' "$conf" \
   || { echo "manager-config: indexer host not set in $conf" >&2; exit 1; }
-echo "manager-config: vulnerability detection off, indexer connector set to https://wazuh.indexer:9200"
+grep -q "<after_registration_time>0</after_registration_time>" "$conf" \
+  || { echo "manager-config: agent replacement not set in $conf" >&2; exit 1; }
+echo "manager-config: vulnerability detection off, indexer connector set, agents may re-enroll"

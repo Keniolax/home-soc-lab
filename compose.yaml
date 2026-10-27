@@ -101,7 +101,11 @@ services:
     depends_on:
       wazuh.indexer: { condition: service_healthy }
     healthcheck:
-      test: ["CMD-SHELL", "/var/ossec/bin/wazuh-control status | grep -q 'wazuh-remoted is running' && /var/ossec/bin/wazuh-control status | grep -q 'wazuh-authd is running' && /var/ossec/bin/wazuh-control status | grep -q 'wazuh-apid is running'"]
+      # The image starts Wazuh once to set the API password, then again for real.
+      # Rarely the second wazuh-apid finds port 55000 still held and exits. If the
+      # API is down, this check runs `wazuh-control start`, which starts only the
+      # missing daemons, and reports unhealthy until the next check sees it up.
+      test: ["CMD-SHELL", "s=$$(/var/ossec/bin/wazuh-control status); echo \"$$s\" | grep -q 'wazuh-apid is running' || { /var/ossec/bin/wazuh-control start >/dev/null 2>&1; exit 1; }; echo \"$$s\" | grep -q 'wazuh-remoted is running' && echo \"$$s\" | grep -q 'wazuh-authd is running'"]
       interval: 10s
       timeout: 10s
       retries: 30

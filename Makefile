@@ -6,7 +6,7 @@ COMPOSE := docker compose
 WAIT_TIMEOUT := 900
 
 .DEFAULT_GOAL := help
-.PHONY: help up down test status logs clean audit harden coverage hunt
+.PHONY: help up down test status logs clean audit harden coverage hunt ir
 
 help: ## List the targets
 	@awk -F ':.*## ' '/^[a-z-]+:.*## / { printf "  make %-8s %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -44,6 +44,11 @@ hunt: ## Run the network sensor over a malicious capture and hunt its C2 (see do
 	@network/run-sensor.sh
 	@python3 network/hunt.py
 	@network/check-siem.sh
+
+ir: ## Reconstruct the incident timeline from the network evidence (see docs/ir-report.md)
+	@network/fetch-pcap.sh
+	@network/run-sensor.sh
+	@python3 ir/timeline.py
 
 harden: ## Harden the victim to a CIS subset (see docs/hardening.md)
 	$(COMPOSE) -f compose.yaml -f compose.harden.yaml up -d --wait --wait-timeout 300 victim

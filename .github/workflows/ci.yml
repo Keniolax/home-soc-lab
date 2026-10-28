@@ -29,3 +29,5 @@ jobs:
         run: python -m pytest coverage/tests -q
       - name: Threat-hunt logic checks
         run: python -m pytest network/tests -q
+      - name: Incident-timeline checks
+        run: python -m pytest ir/tests -q

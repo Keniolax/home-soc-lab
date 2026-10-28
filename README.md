@@ -133,6 +133,7 @@ PASS  rule 5712 alert is in the indexer (wazuh-alerts-*)
 | `make harden` | Hardens the victim to part of the CIS benchmark |
 | `make coverage` | Emulates ATT&CK techniques and maps what the SIEM detects |
 | `make hunt` | Runs the network sensor over a malicious capture and hunts its C2 |
+| `make ir` | Rebuilds the incident timeline from the network evidence (NIST 800-61) |
 | `make down` | Stops the lab and deletes its containers, volumes and certificates |
 | `make clean` | Also deletes `.env` and the victim image |
 
@@ -184,6 +185,23 @@ This closes the biggest gap the coverage run found: the lab used to read host
 logs only, so command-and-control traffic was invisible. The write-up,
 [docs/hunt.md](docs/hunt.md), walks the hunt from hypothesis to indicators and
 lists them.
+
+---
+
+## Incident response
+
+`make ir` runs a NIST SP 800-61 incident response on the C2 infection the network
+sensor found. `ir/timeline.py` rebuilds the incident timeline from the Zeek and
+Suricata evidence — every line cites the log it came from — and the report walks
+the lifecycle: detection, analysis, scope, a containment/eradication/recovery
+playbook, and lessons learned.
+
+The report's centrepiece is an honest AI check. An LLM drafted a first timeline
+before any evidence was read; eight of its ten confident claims (an invented CVE,
+a malware family, an exfiltration, a lateral-movement phase, a fixed beacon
+interval) turned out wrong, unsupported or misleading when checked against the
+capture. The write-up, [docs/ir-report.md](docs/ir-report.md), shows each claim
+against the evidence. *AI drafts, you verify, you say so.*
 
 ---
 

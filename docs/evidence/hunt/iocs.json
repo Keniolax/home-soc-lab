@@ -1,0 +1,29 @@
+{
+  "hunt": "C2 beaconing over HTTP",
+  "capture": "2024-09-04 traffic-analysis exercise (malware-traffic-analysis.net)",
+  "network": {
+    "c2_ip": "79.124.78.197",
+    "c2_port": "80",
+    "c2_uris": [
+      "/foots.php",
+      "/index.php?id=&subid=qIOuKk7U",
+      "/index.php"
+    ],
+    "malware_user_agent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729)"
+  },
+  "host": {
+    "infected_host": "172.17.0.99"
+  },
+  "behaviour": {
+    "beacon_span_s": 3405.9,
+    "beacon_mean_interval_s": 50.8,
+    "http_requests": 50,
+    "addressed_by_raw_ip": true,
+    "mitre": "T1071.001"
+  },
+  "siem_signatures": {
+    "HOMELAB C2 known-bad host 79.124.78.197 (HTTP)": 188,
+    "HOMELAB suspicious MSIE7/Trident7 malware User-Agent": 48,
+    "HOMELAB HTTP POST to raw IP address (possible C2)": 49
+  }
+}

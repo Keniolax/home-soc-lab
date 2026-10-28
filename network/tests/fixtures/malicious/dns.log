@@ -1,0 +1,9 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	dns
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	query	answers
+1725471090.0	D1	172.17.0.99	5353	172.17.0.17	53	www.msftconnecttest.com	23.45.119.144
+1725471190.0	D2	172.17.0.99	5354	172.17.0.17	53	www.bing.com	204.79.197.203
+#close	-

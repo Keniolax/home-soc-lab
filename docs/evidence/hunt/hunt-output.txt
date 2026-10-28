@@ -1,0 +1,74 @@
+=== HYPOTHESIS ===
+A host inside the network is infected and beaconing to an external
+command-and-control server. If so, one internal host will contact one
+external address far more than any other, probably over HTTP, probably
+by raw IP with no DNS lookup, and send POST requests back to it.
+
+=== QUERY 1  (conn.log)  internal -> external, by connection count ===
+  172.17.0.99     -> 79.124.78.197      68 conns     19065 B sent  mean gap 50.8s
+  172.17.0.99     -> 23.45.119.144       8 conns     14448 B sent  mean gap 171.8s
+  172.17.0.99     -> 204.79.197.203      7 conns     16835 B sent  mean gap 170.0s
+  172.17.0.99     -> 52.113.194.132      5 conns     10411 B sent  mean gap 243.4s
+  172.17.0.99     -> 23.195.212.189      3 conns      2379 B sent  mean gap 447.9s
+  172.17.0.99     -> 40.126.28.12        2 conns      2472 B sent  mean gap 26.2s
+
+=== QUERY 2  (http.log + dns.log)  how was it addressed? ===
+  HTTP Host header(s) to 79.124.78.197: ['79.124.78.197']
+  Reached by raw IP literal (no domain): True
+  Ever returned as a DNS answer in the capture: False
+
+=== QUERY 3  (http.log)  the conversation with it ===
+  Methods: [('POST', 49), ('GET', 1)]
+  Top URIs: [('/foots.php', 48), ('/index.php?id=&subid=qIOuKk7U', 1), ('/index.php', 1)]
+  User-Agents: ['Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729)', '']
+
+=== FINDING ===
+  172.17.0.99 is beaconing to 79.124.78.197:80 over HTTP.
+  50 requests over 57 min, mean gap 50.8s.
+  Reached by raw IP with no DNS lookup, POSTing to ['/foots.php', '/index.php?id=&subid=qIOuKk7U', '/index.php'].
+  User-Agent is not a real browser: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729)
+  This is MITRE ATT&CK T1071.001, Application Layer Protocol: Web.
+
+=== SIGNATURE DETECTION  (Suricata eve.json -> SIEM) ===
+   188x  HOMELAB C2 known-bad host 79.124.78.197 (HTTP)
+    48x  HOMELAB suspicious MSIE7/Trident7 malware User-Agent
+    49x  HOMELAB HTTP POST to raw IP address (possible C2)
+
+=== IOCs  (written to docs/evidence/hunt/iocs.json) ===
+=== IOCs  (written to docs/evidence/hunt/iocs.json) ===
+{
+  "hunt": "C2 beaconing over HTTP",
+  "capture": "2024-09-04 traffic-analysis exercise (malware-traffic-analysis.net)",
+  "network": {
+    "c2_ip": "79.124.78.197",
+    "c2_port": "80",
+    "c2_uris": [
+      "/foots.php",
+      "/index.php?id=&subid=qIOuKk7U",
+      "/index.php"
+    ],
+    "malware_user_agent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729)"
+  },
+  "host": {
+    "infected_host": "172.17.0.99"
+  },
+  "behaviour": {
+    "beacon_span_s": 3405.9,
+    "beacon_mean_interval_s": 50.8,
+    "http_requests": 50,
+    "addressed_by_raw_ip": true,
+    "mitre": "T1071.001"
+  },
+  "siem_signatures": {
+    "HOMELAB C2 known-bad host 79.124.78.197 (HTTP)": 188,
+    "HOMELAB suspicious MSIE7/Trident7 malware User-Agent": 48,
+    "HOMELAB HTTP POST to raw IP address (possible C2)": 49
+  }
+}
+check-siem: waiting up to 150s for Suricata alerts on the manager
+check-siem: PASS - 16 Suricata alert(s) (rule 86601) on the manager
+           distinct signatures:
+                   9 "signature":"HOMELAB C2 known-bad host 79.124.78.197 (HTTP)"
+                   4 "signature":"HOMELAB HTTP POST to raw IP address (possible C2)"
+                   3 "signature":"HOMELAB suspicious MSIE7/Trident7 malware User-Agent"
+           saved to tmp/last-test/suricata-siem-alerts.json

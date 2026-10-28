@@ -6,7 +6,7 @@ COMPOSE := docker compose
 WAIT_TIMEOUT := 900
 
 .DEFAULT_GOAL := help
-.PHONY: help up down test status logs clean audit harden coverage
+.PHONY: help up down test status logs clean audit harden coverage hunt
 
 help: ## List the targets
 	@awk -F ':.*## ' '/^[a-z-]+:.*## / { printf "  make %-8s %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -16,6 +16,10 @@ help: ## List the targets
 
 up: .env ## Start the lab and wait until every service is healthy
 	@scripts/preflight.sh
+	@# The victim agent tails this file for the network sensor's alerts (make
+	@# hunt). The agent must find it at start to read it as it grows, so create
+	@# it empty here, before the victim container starts.
+	@mkdir -p tmp/net-logs/suricata && touch tmp/net-logs/suricata/eve.json
 	$(COMPOSE) up -d --build --wait --wait-timeout $(WAIT_TIMEOUT)
 	@port=$$(grep -E '^DASHBOARD_PORT=' .env | cut -d= -f2); \
 	echo; \
@@ -34,6 +38,12 @@ audit: ## Score the victim with Lynis and the CIS checks (LABEL=before or after)
 
 coverage: ## Emulate ATT&CK techniques and map what the SIEM detects (see docs/coverage.md)
 	@coverage/run-coverage.sh
+
+hunt: ## Run the network sensor over a malicious capture and hunt its C2 (see docs/hunt.md)
+	@network/fetch-pcap.sh
+	@network/run-sensor.sh
+	@python3 network/hunt.py
+	@network/check-siem.sh
 
 harden: ## Harden the victim to a CIS subset (see docs/hardening.md)
 	$(COMPOSE) -f compose.yaml -f compose.harden.yaml up -d --wait --wait-timeout 300 victim

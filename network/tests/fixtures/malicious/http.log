@@ -1,0 +1,21 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	http
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	method	host	uri	user_agent
+1725471307.0	H0	172.17.0.99	50000	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471367.0	H1	172.17.0.99	50001	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471427.0	H2	172.17.0.99	50002	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471487.0	H3	172.17.0.99	50003	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471547.0	H4	172.17.0.99	50004	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471607.0	H5	172.17.0.99	50005	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471667.0	H6	172.17.0.99	50006	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471727.0	H7	172.17.0.99	50007	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471787.0	H8	172.17.0.99	50008	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471847.0	H9	172.17.0.99	50009	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471907.0	H10	172.17.0.99	50010	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471967.0	H11	172.17.0.99	50011	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725472027.0	H12	172.17.0.99	50012	79.124.78.197	80	POST	79.124.78.197	/foots.php	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+1725471311.0	Hg	172.17.0.99	50100	79.124.78.197	80	GET	79.124.78.197	/index.php?id=&subid=qIOuKk7U	Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 10.0; WOW64; Trident/7.0; .NET CLR 2.0.50727)
+#close	-

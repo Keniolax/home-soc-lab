@@ -1,9 +1,11 @@
 name: coverage-ci
 
 # The live assessment needs the whole Wazuh lab, which is too heavy for CI.
-# CI instead guards the parts that do not need a lab: the scorer's logic, the
-# technique list, and the shape of the committed Navigator layer. A change that
-# would mislabel a technique or break Navigator import fails here.
+# CI instead guards the parts that do not need a lab: the coverage scorer's
+# logic, the technique list, the shape of the committed Navigator layer, and the
+# threat hunt's logic (run over small Zeek log fixtures). A change that would
+# mislabel a technique, break Navigator import, or make the hunt miss a C2 or
+# flag benign traffic fails here.
 
 on:
   push:
@@ -25,3 +27,5 @@ jobs:
       - run: pip install pyyaml pytest
       - name: Scorer and layer checks
         run: python -m pytest coverage/tests -q
+      - name: Threat-hunt logic checks
+        run: python -m pytest network/tests -q

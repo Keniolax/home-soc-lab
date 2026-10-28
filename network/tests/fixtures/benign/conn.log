@@ -1,0 +1,10 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	conn
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	proto	orig_bytes
+1725471100.0	B1	192.168.1.50	51000	23.45.119.144	443	tcp	1200
+1725471160.0	B2	192.168.1.50	51001	204.79.197.203	443	tcp	900
+1725471220.0	B3	192.168.1.50	51002	23.45.119.144	443	tcp	1100
+#close	-

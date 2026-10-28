@@ -7,6 +7,19 @@
     <location>/var/log/auth.log</location>
   </localfile>
 
+  <!-- Ship the network sensor's Suricata alerts to the manager. `make hunt`
+       runs Suricata over a capture and appends its alerts to eve.json here; the
+       manager's built-in Suricata ruleset (rule 86601) raises an alert for each
+       one, so the SIEM sees network detections, not only host logs. `make up`
+       creates this file empty before the agent starts, so the log collector
+       opens it and ships each line the sensor grows it by. This is the
+       sensor-to-SIEM path week 4 found missing (coverage blind spot 2: no
+       network sensor). -->
+  <localfile>
+    <log_format>json</log_format>
+    <location>/var/log/suricata/eve.json</location>
+  </localfile>
+
   <!-- Do not restart when the manager sends shared configuration. The agent
        gets that configuration once, about 20 seconds after it first connects,
        and the restart skips any log lines written while it runs. That made

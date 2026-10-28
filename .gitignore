@@ -86,3 +86,12 @@ Thumbs.db
 *.log
 tmp/
 scratch/
+pcaps/
+
+# ...but DO commit the Zeek log fixtures the hunt's unit tests read. They are
+# metadata, not captures, and CI needs them.
+!network/tests/fixtures/**/*.log
+
+# The cloud VM overlay writes victim/Dockerfile.cloud from the real Dockerfile.
+# It is a throwaway cloud artifact and must not enter this repo.
+victim/Dockerfile.cloud

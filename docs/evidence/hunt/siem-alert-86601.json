@@ -1,0 +1,61 @@
+{
+    "timestamp": "2026-10-28T01:31:20.797+0000",
+    "rule": {
+        "level": 3,
+        "description": "Suricata: Alert - HOMELAB C2 known-bad host 79.124.78.197 (HTTP)",
+        "id": "86601",
+        "firedtimes": 1,
+        "mail": false,
+        "groups": [
+            "ids",
+            "suricata"
+        ]
+    },
+    "agent": {
+        "id": "001",
+        "name": "victim",
+        "ip": "172.18.0.4"
+    },
+    "manager": {
+        "name": "wazuh.manager"
+    },
+    "id": "1793151080.1885413",
+    "decoder": {
+        "name": "json"
+    },
+    "data": {
+        "timestamp": "2024-09-04T17:35:07.856792+0000",
+        "flow_id": "702937321063019.000000",
+        "pcap_cnt": "1671",
+        "event_type": "alert",
+        "src_ip": "172.17.0.99",
+        "src_port": "49813",
+        "dest_ip": "79.124.78.197",
+        "dest_port": "80",
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "alert": {
+            "action": "allowed",
+            "gid": "1",
+            "signature_id": "9000001",
+            "rev": "1",
+            "signature": "HOMELAB C2 known-bad host 79.124.78.197 (HTTP)",
+            "category": "Malware Command and Control Activity Detected",
+            "severity": "1"
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+            "pkts_toserver": "4",
+            "pkts_toclient": "4",
+            "bytes_toserver": "683",
+            "bytes_toclient": "402",
+            "start": "2024-09-04T17:35:06.753489+0000",
+            "src_ip": "172.17.0.99",
+            "dest_ip": "79.124.78.197",
+            "src_port": "49813",
+            "dest_port": "80"
+        }
+    },
+    "location": "/var/log/suricata/eve.json"
+}

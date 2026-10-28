@@ -132,6 +132,7 @@ PASS  rule 5712 alert is in the indexer (wazuh-alerts-*)
 | `make audit LABEL=before` | Scores the victim with Lynis and the CIS checks |
 | `make harden` | Hardens the victim to part of the CIS benchmark |
 | `make coverage` | Emulates ATT&CK techniques and maps what the SIEM detects |
+| `make hunt` | Runs the network sensor over a malicious capture and hunts its C2 |
 | `make down` | Stops the lab and deletes its containers, volumes and certificates |
 | `make clean` | Also deletes `.env` and the victim image |
 
@@ -161,6 +162,28 @@ command logging, no network sensor, and file watching that runs only every 12 ho
 [docs/coverage.md](docs/coverage.md), names each gap and the fix. It also produces an
 [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/) layer,
 [`coverage/navigator/coverage-layer.json`](coverage/navigator/coverage-layer.json).
+
+---
+
+## Network detection and threat hunting
+
+`make hunt` adds a network sensor to the lab and runs one threat hunt with it.
+It reads a real malicious capture with **Suricata** (a signature engine) and
+**Zeek** (a metadata engine), both offline. Suricata's alerts are shipped to the
+SIEM; Zeek's metadata drives the hunt.
+
+The hunt starts from a hypothesis — a host inside the network is beaconing to an
+external command-and-control server — and follows it through Zeek's connection,
+DNS and HTTP logs to a concrete answer: 172.17.0.99 is beaconing to the C2 server
+79.124.78.197 over HTTP, to a raw IP with no DNS lookup, under a fake
+Internet Explorer User-Agent. The hunt extracts the indicators and the lab's
+Suricata rules fire on the same traffic, raising a network alert in the SIEM
+(rule 86601).
+
+This closes the biggest gap the coverage run found: the lab used to read host
+logs only, so command-and-control traffic was invisible. The write-up,
+[docs/hunt.md](docs/hunt.md), walks the hunt from hypothesis to indicators and
+lists them.
 
 ---
 
@@ -260,6 +283,10 @@ do it, and I run a Linux subset, not the Windows atomics.
 - **No attacker host.** The probe only proves that the detection works. It is not a red-team
   tool.
 - **No Windows telemetry.** Windows detections are not covered yet.
+- **The network sensor reads captures, not live traffic.** `make hunt` runs
+  Suricata and Zeek over a saved `.pcap`, offline. The detections and the hunt
+  are identical on a live tap; a live interface is a deployment detail. See
+  [docs/hunt.md](docs/hunt.md).
 - **No vulnerability detection.** It is off to save disk. See the design decisions above.
 - **Single node.** One manager and one indexer, with no high availability. If the indexer
   stops, the dashboard shows nothing until it returns.

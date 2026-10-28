@@ -153,6 +153,13 @@ services:
     init: true
     restart: unless-stopped
     networks: [lab]
+    volumes:
+      # The network sensor (make hunt) appends Suricata's alerts to eve.json
+      # here. The agent tails it and ships the network alerts to the manager, so
+      # the SIEM sees the network sensor. `make up` creates the file empty before
+      # this container starts, so the agent finds it and reads it as it grows.
+      # Read-only to the victim, which only reads these alerts, never writes them.
+      - ./tmp/net-logs/suricata:/var/log/suricata:ro
     depends_on:
       wazuh.manager: { condition: service_healthy }
     healthcheck:

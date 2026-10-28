@@ -1,0 +1,9 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	http
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	method	host	uri	user_agent
+1725471100.0	H1	192.168.1.50	51000	23.45.119.144	443	GET	assets.msn.com	/	Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/127.0
+1725471160.0	H2	192.168.1.50	51001	204.79.197.203	443	GET	www.bing.com	/search	Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/127.0
+#close	-

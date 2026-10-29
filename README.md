@@ -134,6 +134,7 @@ PASS  rule 5712 alert is in the indexer (wazuh-alerts-*)
 | `make coverage` | Emulates ATT&CK techniques and maps what the SIEM detects |
 | `make hunt` | Runs the network sensor over a malicious capture and hunts its C2 |
 | `make ir` | Rebuilds the incident timeline from the network evidence (NIST 800-61) |
+| `make vuln` | Scans a lab image, fixes three findings, re-scans to prove closure |
 | `make down` | Stops the lab and deletes its containers, volumes and certificates |
 | `make clean` | Also deletes `.env` and the victim image |
 
@@ -202,6 +203,27 @@ a malware family, an exfiltration, a lateral-movement phase, a fixed beacon
 interval) turned out wrong, unsupported or misleading when checked against the
 capture. The write-up, [docs/ir-report.md](docs/ir-report.md), shows each claim
 against the evidence. *AI drafts, you verify, you say so.*
+
+---
+
+## Vulnerability management
+
+`make vuln` runs one full round of vulnerability management on a lab server
+image: scan, triage, fix three findings, then scan again to prove they are
+closed. The target is an Ubuntu 24.04 image pinned to an old build, so the scan
+finds a known, fixable set of CVEs; the victim runs the same packages.
+
+Triage ranks the findings by what an attacker can reach on this host, not by
+score. The three reachable findings — OpenSSL, glibc and PAM — are fixed first;
+a gpgv finding that scores higher but only runs while `apt` checks signatures is
+deferred on purpose. The re-scan proves the three are gone (High findings drop
+from 3 to 1) and that the deferred one is still there. `vuln/assess.py` fails
+the run if a fixed finding remains or the deferred one vanishes, so the proof
+can fail. The write-up, [docs/vuln-report.md](docs/vuln-report.md), shows the
+triage and the before/after.
+
+The scanner is Trivy; the two scanners the course names (Nessus, OpenVAS) are
+not reachable on the build host, which is the week's main limit.
 
 ---
 
@@ -305,7 +327,10 @@ do it, and I run a Linux subset, not the Windows atomics.
   Suricata and Zeek over a saved `.pcap`, offline. The detections and the hunt
   are identical on a live tap; a live interface is a deployment detail. See
   [docs/hunt.md](docs/hunt.md).
-- **No vulnerability detection.** It is off to save disk. See the design decisions above.
+- **No vulnerability detection.** Wazuh's own vulnerability module is off to save disk. See the design decisions above.
+- **One vulnerability scanner.** `make vuln` scans with Trivy only. The two scanners the course
+  names (Nessus, OpenVAS) are not reachable on the build host. A real programme runs more than
+  one, because each misses what the others catch. See [docs/vuln-report.md](docs/vuln-report.md).
 - **Single node.** One manager and one indexer, with no high availability. If the indexer
   stops, the dashboard shows nothing until it returns.
 - **Open agent enrollment.** Any container on the lab network can enroll as an agent without a

@@ -1,0 +1,15 @@
+{
+  "SchemaVersion": 2,
+  "ArtifactName": "home-soc-lab/vuln:after",
+  "Results": [
+    {
+      "Target": "home-soc-lab/vuln:after (ubuntu 24.04)",
+      "Class": "os-pkgs",
+      "Type": "ubuntu",
+      "Vulnerabilities": [
+        {"VulnerabilityID": "CVE-2025-68973", "PkgName": "gpgv", "Severity": "HIGH", "InstalledVersion": "2.4.4-2ubuntu7", "FixedVersion": "2.4.4-2ubuntu17.4"},
+        {"VulnerabilityID": "CVE-2024-28085", "PkgName": "util-linux", "Severity": "LOW", "InstalledVersion": "2.39.3-6ubuntu2", "FixedVersion": "2.39.3-9ubuntu6"}
+      ]
+    }
+  ]
+}

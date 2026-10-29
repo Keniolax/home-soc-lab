@@ -1,0 +1,28 @@
+# The week-8 vulnerability-management target: an Ubuntu 24.04 server image
+# pinned to an old build, so a scan finds a known, fixable set of CVEs and the
+# before/after result is reproducible. It is deliberately outdated the way a
+# real server drifts between patch windows; the lab's victim runs the same OS
+# and the same libraries.
+#
+#   make vuln  builds this twice: once unpatched (the "before" scan target) and
+#   once with REMEDIATE=1 (the "after" target), then scans both with Trivy.
+#
+# REMEDIATE=1 applies the distro's security updates for the three package
+# groups chosen in triage (OpenSSL, glibc, PAM). It upgrades only those, so the
+# re-scan shows the fixed findings gone and everything deferred still present.
+ARG BASE_IMAGE=ubuntu:noble-20240225@sha256:723ad8033f109978f8c7e6421ee684efb624eb5b9251b70c6788fdb2405d050b
+FROM ${BASE_IMAGE}
+
+ARG REMEDIATE=0
+
+RUN set -eux; \
+    if [ "$REMEDIATE" = "1" ]; then \
+      apt-get update; \
+      # glibc and PAM keep their package names; upgrade in place.
+      apt-get install -y --only-upgrade \
+        libc6 libc-bin libpam-modules libpam-modules-bin libpam-runtime libpam0g; \
+      # OpenSSL's runtime library was renamed libssl3 -> libssl3t64 by Ubuntu's
+      # 64-bit time_t transition, so the fix arrives as the new package.
+      apt-get install -y libssl3t64; \
+      rm -rf /var/lib/apt/lists/*; \
+    fi

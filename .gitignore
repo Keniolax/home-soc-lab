@@ -92,6 +92,7 @@ pcaps/
 # metadata, not captures, and CI needs them.
 !network/tests/fixtures/**/*.log
 
-# The cloud VM overlay writes victim/Dockerfile.cloud from the real Dockerfile.
-# It is a throwaway cloud artifact and must not enter this repo.
+# The cloud VM overlay writes these from the real Dockerfiles. They are
+# throwaway cloud artifacts and must not enter this repo.
 victim/Dockerfile.cloud
+vuln/Dockerfile.target.cloud

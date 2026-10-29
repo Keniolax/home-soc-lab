@@ -1,11 +1,12 @@
 name: coverage-ci
 
 # The live assessment needs the whole Wazuh lab, which is too heavy for CI.
-# CI instead guards the parts that do not need a lab: the coverage scorer's
-# logic, the technique list, the shape of the committed Navigator layer, and the
-# threat hunt's logic (run over small Zeek log fixtures). A change that would
-# mislabel a technique, break Navigator import, or make the hunt miss a C2 or
-# flag benign traffic fails here.
+# CI instead guards the parts that do not need a lab or a scanner: the coverage
+# scorer's logic and the committed Navigator layer, the threat hunt (over small
+# Zeek fixtures), the incident timeline, and the week-8 closure proof (over
+# small before/after Trivy fixtures). A change that would mislabel a technique,
+# break Navigator import, make the hunt miss a C2, or let the vuln loop call an
+# unpatched image "closed" fails here.
 
 on:
   push:
@@ -31,3 +32,5 @@ jobs:
         run: python -m pytest network/tests -q
       - name: Incident-timeline checks
         run: python -m pytest ir/tests -q
+      - name: Vulnerability-management closure checks
+        run: python -m pytest vuln/tests -q
